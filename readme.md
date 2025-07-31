@@ -116,6 +116,19 @@ wx_project_id=YOUR_WX_PROJECT_ID
 wx_model_id=google/flan-ul2 # Or any other model
 wx_model_param_max_tokens=300
 DB_ENGINE=mysql
+INCLUDE_SCHEMA_SUMMARY=true
+##
+REST_API_KEY = "api-key-for-rest"
+REST_API_HOST = "http://x.x.x.x:5000"
+DB_ENGINE=mssql
+DB_TYPE=mysql
+DB_NAME=db_name
+DB_INSTANCE=db_instance
+DB_USER=db_user
+DB_PASSWORD=db_pass
+DB_HOST=db_host_ip
+DB_PORT=db_port
+
 ```
 
 ### 3. Install Python Dependencies

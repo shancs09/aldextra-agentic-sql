@@ -1,0 +1,92 @@
+-- Table Descriptions:
+-- spx.MITARBEITER: Employee details (NR, NACHNAME, VORNAME, EINTAG, GEB, MOBIL, EMAIL, NR_X). NR is PK, NR_X is external ID.
+-- spx.MONATSPLAN: Daily schedules for employees (MAGRPNR_F, TAG_F, MANR_F, MPEBENE, FKT_F [Function/Role of employee on that day], SD_FK, NR, COVERED_FROM). Composite PK. Links employees to shifts and specific dates (historical/planned daily details). **Contains the FKT_F (function) for actual employees.**
+-- spx.S_DIENST: Shift definitions (PRIMKEY, SDIENST_KURZ, SDIENST_LANG). PRIMKEY is PK. Use SDIENST_KURZ for shift names.
+-- spx.MULTIGRP: Multischedule groups (PRIMKEY, BEZ). PRIMKEY is PK.
+-- spx.MP_MULTIGRP: Employee's assigned multischedule groups on specific dates (MANR_F, TAG, MPEBENE, MULTIGRP_F, NR). Composite PK. **Use for historical or planned daily assignments to groups. Does NOT contain VON/BIS columns.**
+-- spx.MULTIGRP_MAS: Employees belonging to a multischedule group for a period (MULTIGRP_F, MA_F, VON, BIS). **Use for current or active assignments, as it explicitly defines start (VON) and end (BIS) dates for the assignment period.**
+-- spx.MULTIGRP_WORKFLOWTYPES: Workflows associated with multischedule groups (MULTIGRP_F, WORKFLOWTYPE_F, VON, BIS).
+-- spx.WORKFLOWTYPE: Workflow definitions (PRIMKEY, BEZ, BESCHR). PRIMKEY is PK.
+-- spx.MULTIGRP_ROLLEN: Roles assigned to employees within multischedule groups (MULTIGRP_F, ROLLE_F, MA_F, VON, BIS).
+-- spx.ROLLE: Role definitions (PRIMKEY, BEZ). PRIMKEY is PK.
+-- spx.MONATSPLANTEIL: Employee groups / schedule parts (PLANTEIL_NR, BEZEICHNUNG). PLANTEIL_NR is PK.
+-- spx.MULTIGRP_MAGRPS: Employee groups assigned to multischedule groups for a period (MULTIGRP_F, MAGRP_F, VON, BIS).
+-- spx.MAGRP_HISTORIE: Historical employee group assignments for employees (MANR_F, GUELTIG_AB, MONATSPLANTEILNR_F, AUS_GRP_F).
+-- spx.SDZATT: Minimum break times between shifts for a day type (BEZ_F, TTNR, TT_F, MINRUHE).
+-- spx.SD_SDZA_HIST: Historical shift details (SD_FK, AB_DATUM, SDZA_F).
+-- spx.SDZATTZA: Shift duration details (BEZ_F, TTNR_F, VON, BIS, DAUER). DAUER is in minutes.
+-- spx.SDZATTZAZE: Time types associated with shifts (BEZ_F, TTNR_F, ZE_F).
+-- spx.SDIENST_TT_KONTO: Accounts associated with shifts by day type (SD_FK, TTKURZ_F, KONTOBEZ, WERT).
+-- spx.MONATSALTERZEIT: Planned working times and clock-in/out times (MANR_F, TAG_F, ARBEITSZEIT_VON, ARBEITSZEIT_BIS, MPEBENE, EIGENSCHAFT_F, DAUER).
+-- spx.MULTIGRP_MULTIGRPS: Parent-child relationships between multischedule groups (MULTIGRP_F, CHILD_MULTIGRP_F, VON, BIS).
+-- spx.MULTIGRP_KAL_HIST: Historical calendar assignments to multischedule groups (MULTIGRP_F, AB, KAL_F).
+-- spx.MAGRP_KAL_HIST: Historical calendar assignments to employee groups (MAGRP_F, AB_DATUM, KAL_BEZ_F).
+-- spx.KALENDER: Calendar definitions (BEZEICHNER, DEFAULT_FLAG, ABRECHNUNG_FLAG, EMAP). BEZEICHNER is PK.
+-- spx.KALENDERTAG: Day types within calendars (KAL_BEZ_F, KALENDERTAG [date as days since 1990-01-01, stored as VARCHAR(X) or NCHAR(X), e.g., '10817 '], TTKURZ_F, TAGNAME). KALENDERTAG is date as days since 1990-01-01. Used to link dates to day types for staffing profiles.
+-- spx.TTWOTAGE: Day types by weekday within calendars (KAL_BEZ_F, WOCHENTAG, TTKURZ_F).
+-- spx.BEST_SD: Staffing needs for shifts on a given day (MULTIGRP_F, TAGNR [date as days since 1990-01-01, usually integer], SD_FK [FK to S_DIENST.PRIMKEY], FKT_F [Function/Role], MIN_WERT, SOLL_WERT [Required Staffing], MAX_WERT, ISSECONDARY). **This table defines direct daily staffing requirements (needs) for specific dates. When a query asks for 'how many we need' on a specific date, this is one of the primary sources.**
+-- spx.SDMSM_TT: Staffing needs profiles for functions by day type (PRF_F, FKT_F [Function/Role], SD_FK [FK to S_DIENST.PRIMKEY], TT_F [FK to TAGTYP.TTKURZ], MIN_WERT, SOLL_WERT [Required Staffing], MAX_WERT). **This table defines staffing requirements (needs) based on a day type (e.g., 'weekend', 'weekday'). When a query asks for 'how many we need' on a specific date, this is the other primary source, which needs to be linked via KALENDERTAG. For a complete and accurate view of staffing needs for a specific date and function, results from both BEST_SD and SDMSM_TT typically need to be combined using UNION ALL. Queries comparing actual staff vs. needs often require CTEs/subqueries and a HAVING clause.**
+-- spx.TAGTYP: Day type definitions (TTKURZ, TTLANG). TTKURZ is PK.
+-- spx.ZEITBUCHUNG: Employee clock-in/out timestamps. Contains both original and potentially corrected time events.
+--   - ID: Primary Key
+--   - MANR_F: Foreign Key to spx.MITARBEITER.NR (Employee Number)
+--   - ZEITSTEMPEL: [datetime] The potentially corrected/current timestamp of the event.
+--   - ZER_F: [string] The event type (e.g., 'Entrada' for clock-in, 'Salida' for clock-out). This is a direct descriptor, not a foreign key.
+--   - ORIG_MANR_F: Original Employee Number (if corrected)
+--   - ORIG_ZEITSTEMPEL: [datetime] The *original* timestamp before any corrections.
+--   - ORIG_ZER_F: [string] The *original* event type (e.g., 'Entrada', 'Salida'). This is a direct descriptor, not a foreign key.
+--   - SATZART: [string] Record type, typically not used for general queries.
+--   - TERMINALID: Terminal where the event occurred.
+--   - LDATUM: [string] Event date in 'YYYYMMDD' format (e.g., '20191113'). Use for filtering by date when `ZEITSTEMPEL` or `ORIG_ZEITSTEMPEL` are not being cast to DATE.
+-- spx.ZEITREIGNIS: [Do not use for direct event type lookup for ZER_F/ORIG_ZER_F as these values are strings within ZEITBUCHUNG.] Time event definitions (BEZEICHNER, BESCHREIBUNG, SATZART).
+
+--- Common Join Paths:
+-- Employee (MITARBEITER) to Schedule (MONATSPLAN): MITARBEITER.NR = MONATSPLAN.MANR_F
+-- Employee (MITARBEITER) to Monthly Multischedule Group Plan (MP_MULTIGRP): MITARBEITER.NR = MP_MULTIGRP.MANR_F (Use for "ever been" or historical daily assignments, and direct "belongs to" questions. This table links specific planned daily employee assignments to multischedule groups and does NOT have VON/BIS columns.)
+-- Employee (MITARBEITER) to Period-based Multischedule Group Assignments (MULTIGRP_MAS): MITARBEITER.NR = MULTIGRP_MAS.MA_F (Crucial for "currently in" or assignments with a specific start/end date range. This table HAS VON and BIS columns for validity periods.)
+-- Employee (MITARBEITER) to Roles: MITARBEITER.NR = MULTIGRP_ROLLEN.MA_F
+-- Employee (MITARBEITER) to Time Bookings: MITARBEITER.NR = ZEITBUCHUNG.MANR_F
+-- Employee (MITARBEITER) to Planned Working Times: MITARBEITER.NR = MONATSALTERZEIT.MANR_F
+-- Employee (MITARBEITER) to Employee Group History: MITARBEITER.NR = MAGRP_HISTORIE.MANR_F
+
+-- Schedule (MONATSPLAN) to Shift: MONATSPLAN.SD_FK = S_DIENST.PRIMKEY
+-- Schedule (MONATSPLAN) to Date: MONATSPLAN.TAG_F = KALENDERTAG.KALENDERTAG
+
+-- Staffing Needs by Date (BEST_SD): BEST_SD.SD_FK = S_DIENST.PRIMKEY (for shift name); BEST_SD.TAGNR for date filter.
+-- Staffing Needs by Day Type (SDMSM_TT): SDMSM_TT.SD_FK = S_DIENST.PRIMKEY (for shift name); SDMSM_TT.TT_F = KALENDERTAG.TTKURZ_F and KALENDERTAG.KALENDERTAG for date filter.
+
+-- Multischedule Group (MULTIGRP) to Monthly Plan (MP_MULTIGRP): MULTIGRP.PRIMKEY = MP_MULTIGRP.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Period-based Assignments (MULTIGRP_MAS): MULTIGRP.PRIMKEY = MULTIGRP_MAS.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Workflow Types: MULTIGRP.PRIMKEY = MULTIGRP_WORKFLOWTYPES.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Roles: MULTIGRP.PRIMKEY = MULTIGRP_ROLLEN.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Employee Groups: MULTIGRP.PRIMKEY = MULTIGRP_MAGRPS.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Calendar History: MULTIGRP.PRIMKEY = MULTIGRP_KAL_HIST.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Child Multigroups: MULTIGRP.PRIMKEY = MULTIGRP_MULTIGRPS.MULTIGRP_F
+-- Multischedule Group (MULTIGRP) to Staffing Needs: MULTIGRP.PRIMKEY = BEST_SD.MULTIGRP_F
+
+-- Shift (S_DIENST) to Shift Attributes (SDZATT): S_DIENST.SDIENST_KURZ = SDZATT.BEZ_F
+-- Shift (S_DIENST) to Shift History: S_DIENST.PRIMKEY = SD_SDZA_HIST.SD_FK
+-- Shift (S_DIENST) to Shift Duration (SDZATTZA): S_DIENST.SDIENST_KURZ = SDZATTZA.BEZ_F
+-- Shift (S_DIENST) to Account: S_DIENST.PRIMKEY = SDIENST_TT_KONTO.SD_FK
+
+-- Workflow Type (WORKFLOWTYPE) to Multischedule Group: WORKFLOWTYPE.PRIMKEY = MULTIGRP_WORKFLOWTYPES.WORKFLOWTYPE_F
+
+-- Role (ROLLE) to Multischedule Group Roles: ROLLE.PRIMKEY = MULTIGRP_ROLLEN.ROLLE_F
+
+-- Employee Group (MONATSPLANTEIL) to Multischedule Group Employees: MONATSPLANTEIL.PLANTEIL_NR = MAGRP_HISTORIE.MONATSPLANTEILNR_F
+-- Employee Group (MONATSPLANTEIL) to Multischedule Group Assignment: MONATSPLANTEIL.PLANTEIL_NR = MULTIGRP_MAGRPS.MAGRP_F
+-- Employee Group (MONATSPLANTEIL) to Calendar History: MONATSPLANTEIL.PLANTEIL_NR = MAGRP_KAL_HIST.MAGRP_F
+
+-- Calendar (KALENDER) to Calendar Day: KALENDER.BEZEICHNER = KALENDERTAG.KAL_BEZ_F
+-- Calendar (KALENDER) to Weekday Types: KALENDER.BEZEICHNER = TTWOTAGE.KAL_BEZ_F
+-- Calendar (KALENDER) to Multischedule Group History: KALENDER.BEZEICHNER = MULTIGRP_KAL_HIST.KAL_F
+-- Calendar (KALENDER) to Employee Group History: KALENDER.BEZEICHNER = MAGRP_KAL_HIST.KAL_BEZ_F
+
+-- Day Type (TAGTYP) to Calendar Day: TAGTYP.TTKURZ = KALENDERTAG.TTKURZ_F
+-- Day Type (TAGTYP) to Shift Attributes (SDZATT): TAGTYP.TTKURZ = SDZATT.TT_F
+-- Day Type (TAGTYP) to Account per Shift: TAGTYP.TTKURZ = SDIENST_TT_KONTO.TTKURZ_F
+-- Day Type (TAGTYP) to Staffing Needs Profile: TAGTYP.TTKURZ = SDMSM_TT.TT_F
+
+-- Time Event (ZEITREIGNIS) to Time Booking: ZEITREIGNIS.BEZEICHNER = ZEITBUCHUNG.ZER_F (or ORIG_ZER_F)
+
+-- Convert numerical date (days since 1990-01-01) to DATE: DATEADD(day, numerical_date, '1990-01-01')

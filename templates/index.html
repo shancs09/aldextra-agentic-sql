@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Agents Interface</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url("/static/AI-Agents.jpg.webp") no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+
+    #root {
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Custom Avatar Styling */
+    .agentAvatar svg {
+      display: none !important;
+    }
+
+    .agentAvatar {
+      background-image: url('/static/ai_2814666.png') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      border-radius: 50% !important;
+      width: 40px !important;
+      height: 40px !important;
+      padding: 0 !important;
+    }
+     /* #question-box {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: rgba(255, 255, 255, 0.95);
+      border-top-right-radius: 10px;
+      box-shadow: 2px -2px 10px rgba(0, 0, 0, 0.2);
+      padding: 12px 16px;
+      font-family: sans-serif;
+      font-size: 14px;
+      z-index: 9999;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    #question-box h4 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+
+    #question-box ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    #question-box ol li {
+      margin-bottom: 8px;
+    } */
+  </style>
+</head>
+<body>
+<!-- <div id="question-box">
+    <h4>Questions</h4>
+    <ol>
+      <li>How many employees with the function <strong>Auxiliar sanitario</strong> do we need on 14th August 2019?</li>
+      <li>Understaff in any multischedule group for <strong>Auxiliar Sanitario</strong> on 14th August 2019? List with needs and staff.</li>
+      <li>Which shifts use <strong>Marcajes Horas Trabajo</strong> but not <strong>Generados</strong> account?</li>
+      <li>How many employees, grouped by shift, work on 12th November 2020 in <strong>Rehabilitación</strong>?</li>
+    </ol>
+  </div>
+  <div id="root"></div> -->
+
+    <script>
+      window.wxOConfiguration = {
+                    orchestrationID: "3628504c922343028a1d735cca2420b9_2cc48af0-9d52-4a51-9fc0-b6ad7672ffa0",
+                    hostURL: "https://eu-de.watson-orchestrate.cloud.ibm.com",
+                    rootElementID: "root",
+                    showLauncher: true,
+                    crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-de:a/3628504c922343028a1d735cca2420b9:2cc48af0-9d52-4a51-9fc0-b6ad7672ffa0::",
+                    deploymentPlatform: "ibmcloud",
+                    chatOptions: {
+            agentId: "6500250b-567b-45b4-88c2-fc9097ad8f9b",
+            agentEnvironmentId: "cacd44d3-d549-4fdd-882d-85a545a34af4"
+        },
+      style: {
+          headerColor: '#02b3b5',                      // Teal header (unchanged)
+          userMessageBackgroundColor: '#ffffff',       // White for user messages
+          primaryColor: '#02e8c7',                     // New teal for highlights
+          launcherIconFillColor: '#ffffff',            // White chat icon
+          launcherBackgroundColor: '#02e8c7'           // Updated teal for launcher
+        },
+      layout: {
+        form: 'float',
+        width: '900px',
+        height: '800px',
+        showOrchestrateHeader: false
+      }
+    };
+
+    // Load the chat widget script
+    setTimeout(function () {
+      const script = document.createElement('script');
+      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+      script.addEventListener('load', () => wxoLoader.init());
+      document.head.appendChild(script);
+    }, 0);
+  </script>
+</div>
+</body>
+</html>

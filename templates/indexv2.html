@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>AI Agents Interface-</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url("/static/AI-Agents.jpg.webp") no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+
+    #root {
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+     window.wxOConfiguration = {
+                    orchestrationID: "3628504c922343028a1d735cca2420b9_2cc48af0-9d52-4a51-9fc0-b6ad7672ffa0",
+                    hostURL: "https://eu-de.watson-orchestrate.cloud.ibm.com",
+                    rootElementID: "root",
+                    showLauncher: true,
+                    crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-de:a/3628504c922343028a1d735cca2420b9:2cc48af0-9d52-4a51-9fc0-b6ad7672ffa0::",
+                    deploymentPlatform: "ibmcloud",
+                    chatOptions: {
+            agentId: "6500250b-567b-45b4-88c2-fc9097ad8f9b",
+            agentEnvironmentId: "cacd44d3-d549-4fdd-882d-85a545a34af4"
+        },
+
+      style: {
+        headerColor: '#000000',
+        userMessageBackgroundColor: '#000000',
+        primaryColor: '#000000'
+      },
+
+      layout: {
+        form: 'fullscreen-overlay',
+        showOrchestrateHeader: true
+      }
+    };
+
+    setTimeout(function() {
+      const script = document.createElement('script');
+      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+      script.addEventListener('load', () => wxoLoader.init());
+      document.head.appendChild(script);
+    }, 0);
+  </script>
+</body>
+</html>

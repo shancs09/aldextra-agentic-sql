@@ -1,0 +1,308 @@
+CREATE TABLE spx.MITARBEITER (
+	NR VARCHAR(15) NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the employee spx.MITARBEITER table',
+	NACHNAME VARCHAR(30) NULL COMMENT 'Name of the employee',
+	VORNAME VARCHAR(20) NULL COMMENT 'Surname of the employee',
+	EINTAG DATE NULL COMMENT 'The employee entry date',
+	AUSTAG INT NOT NULL DEFAULT 32767 COMMENT 'The employee exit date from the company. It is expressed in number of days passed since 01/01/1990. By default the system uses 32767 if its not set',
+	GEB DATE NULL COMMENT 'The employee birth date',
+	MOBIL VARCHAR(15) NULL COMMENT 'The employee mobile phone number',
+	ANREDE VARCHAR(6) NULL COMMENT 'How to address the employee: mister, mistress etc.',
+	EMAIL VARCHAR(60) NULL COMMENT 'The employee email',
+	NR_X VARCHAR(15) NULL COMMENT 'The employee ID or identifier in the company they work for'
+) COMMENT = 'Table with employee data';
+
+
+CREATE TABLE spx.MONATSPLAN (
+	MAGRPNR_F INT NOT NULL COMMENT 'Employee group foreign key',
+	TAG_F INT NOT NULL PRIMARY KEY COMMENT 'Date, expressed in days since 01/01/1990',
+	MANR_F VARCHAR(15) NOT NULL COMMENT 'Unique identifier for the employee in the database',
+	MPEBENE SMALLINT NOT NULL PRIMARY KEY COMMENT 'Layer where the schedule is if it is a multilayered schedule',
+	FKT_F VARCHAR(25) NOT NULL COMMENT 'Function assigned to the shift that day'
+	SD_FK INT NULL COMMENT 'Unique shift identifier in the database',
+	NR SMALLINT NOT NULL PRIMARY KEY COMMENT 'Number of the shift. Used in case it is a multishift or an special shift added over another shift',
+	COVERED_FROM SMALLINT NULL COMMENT 'Code used in special shifts to identify which is the shift below it',
+	  CONSTRAINT FK_MONATSPLAN_MAGRPNR FOREIGN KEY (MAGRPNR_F) REFERENCES spx.MONATSPLANTEIL(PLANTEIL_NR),
+	  CONSTRAINT FK_MONATSPLAN_TAG FOREIGN KEY (TAG_F) REFERENCES spx.KALENDERTAG (KALENDERTAG),
+	  CONSTRAINT FK_MONATSPLAN_MANR FOREIGN KEY (MANR_F) REFERENCES spx.MITARBEITER(NR),
+	  CONSTRAINT FK_MONATSPLAN_SD FOREIGN KEY (SD_FK) REFERENCES spx.S_DIENST(PRIMKEY),
+) COMMENT = 'Table with schedules data';
+
+
+CREATE TABLE spx.S_DIENST (
+	PRIMKEY INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the shift in the database',
+	SDIENST_KURZ VARCHAR(30) NOT NULL COMMENT 'Short name of the shift. Is the default name of the shift',
+	SDIENST_LANG VARCHAR(50) NULL COMMENT 'Long name of the shift. Includes some description of the shift'
+) COMMENT = 'Table with shifts data';
+
+
+CREATE TABLE spx.MULTIGRP_MAS (
+	MULTIGRP_F INT NOT NULL COMMENT 'Unique identifier for the multischedule group in the database',
+	MA_F VARCHAR(15) NOT NULL COMMENT 'Unique identifier for the employee in the database',
+	VON INT NOT NULL COMMENT 'Begin date of belonging to the group in days passed since 01/01/1990. By default the system uses 0 if its not set',
+	BIS INT NOT NULL DEFAULT 32767 COMMENT 'End date of belonging to the group in days passed since 01/01/1990. By default the system uses 32767 if its not set.',
+	  CONSTRAINT FK_MULTIGRP_MAS_MA_F FOREIGN KEY (MA_F) REFERENCES spx.MITARBEITER (NR),
+	  CONSTRAINT FK_MULTIGRP_MAS_MA_MULTIGRP_F FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY)
+) COMMENT = 'Employees included in a multischedule group during an specific period of time';
+
+
+CREATE TABLE spx.MP_MULTIGRP (
+	MANR_F VARCHAR(15) NOT NULL COMMENT 'Unique identifier for the employee in the database',
+	TAG INT NOT NULL COMMENT 'Date, expressed in days passed since 01/01/1990',
+	MPEBENE SMALLINT NOT NULL COMMENT 'Layer where the shift is if it is a multilayered schedule',
+	MULTIGRP_F INT NOT NULL COMMENT 'Unique identifier for the multischedule group in the database',
+	NR SMALLINT NOT NULL 'Number of the shift.Used in case it is a multishift or an special shift added over another shift',
+	  CONSTRAINT FK_MP_MULTIGRP_MANR FOREIGN KEY (MANR_F) REFERENCES spx.MITARBEITER (NR),
+	  CONSTRAINT FK_MP_MULTIGRP_TAG FOREIGN KEY (TAG) REFERENCES spx.KALENDERTAG (KALENDERTAG),
+	  CONSTRAINT FK_MP_MULTIGRP_MPEBENE FOREIGN KEY (MPEBENE) REFERENCES spx.MONATSPLAN(MPEBENE),
+	  CONSTRAINT FK_MP_MULTIGRP_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY)
+) COMMENT = 'Table with multischedule groups assigned in an specific date through shifts';
+
+
+CREATE TABLE spx.MULTIGRP (
+	PRIMKEY INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the multischedule group in the database',
+	BEZ VARCHAR(50) NOT NULL COMMENT 'Name of the multischedule group'
+) COMMENT = 'Table with multischedule groups data';
+
+
+CREATE TABLE spx.MULTIGRP_WORKFLOWTYPES (
+	MULTIGRP_F INT NOT NULL COMMENT 'Unique identifier for the multischedule group in the database',
+	WORKFLOWTYPE_F INT NOT NULL COMMENT 'Unique identifier for the workflow in the database',
+	VON INT NOT NULL COMMENT 'Begin date of belonging to the group in days passed since 01/01/1990. By default the system uses 0 if its not set.',
+	BIS INT NOT NULL DEFAULT 32767 COMMENT 'End date of belonging to the group in days passed since 01/01/1990. By default the system uses 32767 if its not set.',
+	  CONSTRAINT FK_MULTIGRP_WORKFLOWTYPES_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY),
+	  CONSTRAINT FK_MULTIGRP_WORKFLOWTYPES_WORKFLOWTYPE FOREIGN KEY (WORKFLOWTYPE_F) REFERENCES spx.WORKFLOWTYPES(PRIMKEY)
+) COMMENT = 'Table with data about the workflows included in a multischedule group';
+
+
+CREATE TABLE spx.WORKFLOWTYPE (
+	PRIMKEY INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the workflow in the database',
+	BEZ VARCHAR(30) NOT NULL COMMENT 'Name of the workflow',
+	BESCHR VARCHAR(250) NULL COMMENT 'Description of the workflow',
+	PARMS TEXT NULL COMMENT 'Shortcuts to XML schema instances and XML version information'
+) COMMENT = 'Table with data about the workflows';
+
+
+CREATE TABLE spx.NG_PRIMKEY_GUID (
+	GUID INT NOT NULL PRIMARY KEY COMMENT 'XML elements',
+	PRIMKEY INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier of the correspondent XML element. In this case, the role assigned in the workflow as approver'
+) COMMENT ='Table with the xml elements associated with the worklow roles';
+
+
+CREATE TABLE spx.MULTIGRP_ROLLEN (
+    MULTIGRP_F INT NOT NULL COMMENT 'Unique identifier for the multischedule group in the database',
+    ROLLE_F INT NOT NULL COMMENT 'Unique identifier for the role assigned in the workflow',
+    MA_F VARCHAR(15) NOT NULL COMMENT 'Unique identifier for the employee in the database',
+    VON INT NOT NULL COMMENT 'Begin date of the role assignment in days passed since 01/01/1990',
+    BIS INT NOT NULL COMMENT 'End date of the role assignment expressed in days passed since 01/01/1990. By default the system uses 32767 if it's not set',	
+      CONSTRAINT FK_MULTIGRP_ROLLEN_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY),
+      CONSTRAINT FK_MULTIGRP_ROLLEN_ROLLE FOREIGN KEY (ROLLE_F) REFERENCES spx.ROLLE(PRIMKEY),
+      CONSTRAINT FK_MULTIGRP_ROLLEN_MITARBEITER FOREIGN KEY (MA_F) REFERENCES spx.MITARBEITER(NR)
+) COMMENT = 'Table with data about the roles included in a multischedule group';
+
+
+CREATE TABLE spx.ROLLE (
+    PRIMKEY INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the role',
+    BEZ VARCHAR(30) NOT NULL COMMENT 'Name of the role'
+) COMMENT = 'Table with data about schedules';
+
+
+CREATE TABLE spx.MONATSPLANTEIL (	
+        PLANTEIL_NR INT NOT NULL PRIMARY KEY COMMENT 'Unique identifier for the employee group',
+	BEZEICHNUNG VARCHAR(30)	NULL COMMENT 'Employee group name in the default language',
+	GEPLANT_BIS INT	NULL COMMENT 'Date is scheduled until in days passed sincs 01/01/1990',
+	GENEHMIGHT INT NULL COMMENT 'Date is approved until in days passed since 01/01/1990',
+	ABSCHLUSS INT NULL COMMENT 'Date until  schedule finalization in days passed since 0/01/1990',
+	ERSTELL_PLANER	VARCHAR(30) NULL COMMENT 'Creator of the plan',
+	ERSTELL_DATUM INT NULL COMMENT 'Creation date',
+	GENEHMIGT_VON VARCHAR(30) NULL COMMENT 'Approver of the plan',
+	GENEHMIGT_AM INT NULL COMMENT 'Date of approval in days passed since 01/01/1990',
+) COMMENT = 'Table with data about the schedule data ';
+
+
+CREATE TABLE spx.MULTIGRP_MAGRPS (	
+	MULTIGRP_F INT NOT NULL	FOREIGN KEY COMMENT 'Unique identifier for the multischedule group',
+	MAGRP_F	INT NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the employee group',
+	VON INT	NOT NULL COMMENT 'Start date of assignment of the employee group to the multischedulegroup in days passed since 01/01/1990',
+	BIS INT	NOT NULL COMMENT 'End date of assignment of the employee group to the multischedulegroup in days passed since 01/01/1990',
+          CONSTRAINT FK_MULTIGRP_MAGRPS_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY),
+          CONSTRAINT FK_MULTIGRP_MAGRPS_MAGRP FOREIGN KEY (MAGRP_F) REFERENCES spx.MONATSPLANTEIL(PLANTEIL_NR),
+) COMMENT = 'Table with data about employees assigned to multischedule group through an employee group';
+
+
+CREATE TABLE spx.MAGRP_HISTORIE ( 
+        MANR_F VARCHAR(15) NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the employee',
+	GUELTIG_AB INT NOT NULL	 COMMENT 'Start date of assignment to the employee group',
+	MONATSPLANTEILNR_F INT NOT NULL	FOREIGN KEY COMMENT 'Unique identifier for the employee group',
+	AUS_GRP_F INT NULL FOREIGN KEY COMMENT 'Original group in case the current one is temporary',
+	  CONSTRAINT FK_MAGRP_HISTORIE_MONATSPLANTEILNR FOREIGN KEY (MONATSPLANTEILNR_F) REFERENCES spx.MONATSPLANTEIL(PLANTEIL_NR),
+          CONSTRAINT FK_MAGRP_HISTORIE_MANR FOREIGN KEY (MANR_F) REFERENCES spx.MITARBEITER (NR)
+) COMMENT = 'Table with historical data about the employees belonging to an employee group';
+
+
+CREATE TABLE spx.SDZATT ( 
+	BEZ_F VARCHAR(20) NOT NULL FOREIGN KEY COMMENT 'Short name of the shift',
+	TTNR SMALLINT NOT NULL	 COMMENT 'Number ID of the type of day',
+	TT_F VARCHAR(4)	NULL FOREIGN KEY COMMENT 'Identifier of the type of day',
+	MINRUHE	INT NULL COMMENT 'Break time between shifts',
+          CONSTRAINT FK_SDZATT_BEZ FOREIGN KEY (BEZ_F) REFERENCES spx.S_DIENST(SDIENST_KURZ),
+	  CONSTRAINT FK_SDZATT_TT FOREIGN KEY (TT_F) REFERENCES spx.TAGTYP(TTKURZ),
+) COMMENT = 'Table with data about minimum break times between shifts';
+
+
+CREATE TABLE spx.SD_SDZA_HIST (	
+	SD_FK INT NOT NULL  COMMENT 'Unique identifier for the shift in the database',
+	AB_DATUM INT NOT NULL COMMENT 'Date of the shift',
+	SDZA_F VARCHAR(20) NULL	FOREIGN KEY COMMENT 'Short name of the shift',
+          CONSTRAINT FK_SDZA_HIST_SD FOREIGN KEY (SD_FK) REFERENCES spx.S_DIENST(PRIMKEY),
+          CONSTRAINT FK_SDZA_HIST_SDZA FOREIGN KEY (SDZA_F) REFERENCES spx.S_DIENST(SDIENST_KURZ)
+) COMMENT = 'Table with historical data about the shifts';
+
+
+CREATE TABLE spx.SDZATTZA (	
+	BEZ_F VARCHAR(20) NOT NULL FOREIGN KEY COMMENT 'Short name of the shift',
+	TTNR_F SMALLINT	NOT NULL FOREIGN KEY COMMENT 'Number ID of the type of day',
+	VON INT	NULL COMMENT 'Hour of the shift start expressed in minutes since midnight',
+	BIS INT	NULL COMMENT 'Hour of the shift end expressed in minutes since midnight',
+	DAUER INT NULL COMMENT 'Duration of the shift in minutes',
+          CONSTRAINT FK_SDZATTZA_BEZ FOREIGN KEY (BEZ_F) REFERENCES spx.S_DIENST(SDIENST_KURZ),
+          CONSTRAINT FK_SDZATTZA_TTNR FOREIGN KEY (TTNR_F) REFERENCES spx.SDZATT(TTNR)
+) COMMENT = 'Table with data about the duration of the shifts';
+
+
+CREATE TABLE spx.SDZATTZAZE (
+	BEZ_F VARCHAR(20) NOT NULL FOREIGN KEY COMMENT 'Short name of the shift',
+	TTNR_F SMALLINT	NOT NULL FOREIGN KEY COMMENT 'Number ID of the type of day',
+	ZE_F VARCHAR(20) NOT NULL COMMENT 'Time type',
+          CONSTRAINT FK_SDZATTZAZE_TTNR FOREIGN KEY (TTNR_F) REFERENCES spx.SDZATT(TTNR)
+) COMMENT = 'Table with data about the type of time associated with the shift ';
+
+
+CREATE TABLE spx.SDIENST_TT_KONTO (	
+	SD_FK INT NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the shift in the database',
+	TTKURZ_F VARCHAR(4) NOT NULL FOREIGN KEY COMMENT 'Identifier of the type of day',
+	KONTOBEZ VARCHAR(30) NOT NULL COMMENT 'Name of the account',
+	WERT NUMERIC(10,2) NULL	COMMENT	'Value of the account',
+          CONSTRAINT FK_SDIENST_TT_KONTO_SD FOREIGN KEY (SD_FK) REFERENCES spx.S_DIENST(PRIMKEY),
+	  CONSTRAINT FK_SDIENST_TT_KONTO_TTKURZ FOREIGN KEY (TTKURZ_F) REFERENCES spx.TAGTYP(TTKURZ),
+) COMMENT = 'Table with data about the accounts associated to a shift ';
+
+
+CREATE TABLE spx.ZEITBUCHUNG (
+	ID INT NOT NULL	PRIMARY KEY COMMENT 'Unique identifier of an specific time stamp in the database',
+	MANR_F VARCHAR(15) NULL	FOREIGN KEY COMMENT 'Unique identifier for the employee in the database associated with the current time stamp and time event',
+	ZEITSTEMPEL DATETIME2(7) NULL COMMENT 'Date and time of the current timestamp, including any correction',
+	ZER_F VARCHAR(20) NULL FOREIGN KEY COMMENT 'Name of the current time event',
+	ORIG_MANR_F VARCHAR(15)	NULL FOREIGN KEY COMMENT 'Unique identifier for the employee in the database associated with the original time stamp and original time event',
+	ORIG_ZEITSTEMPEL DATETIME2(7) NULL COMMENT 'Date and time of the original time stamp without corrections',
+	ORIG_ZER_F VARCHAR(20) NULL FOREIGN KEY	COMMENT	'Name of the original time event without corrections',
+	SATZART	VARCHAR(5) NULL COMMENT 'Code of the time event',
+	TERMINALID VARCHAR(50) NULL COMMENT 'Identifier of the terminal where the employees clock in and clock out',
+          CONSTRAINT FK_ZEITBUCHUNG_MANR FOREIGN KEY (MANR_F) REFERENCES spx.MITARBEITER (NR)
+) COMMENT = 'Table with data about the real clock in and clock out timestamps ';
+
+
+CREATE TABLE spx.ZEITREIGNIS (
+	BEZEICHNER VARCHAR(20)	NOT NULL PRIMARY KEY COMMENT 'Name of the time event',
+	BESCHREIBUNG VARCHAR(30) NULL COMMENT 'Description of the time event',
+	SATZART	VARCHAR(5) NULL	COMMENT	'Code of the time event',
+) COMMENT = 'Table with data about the time events associated with the timestamps ';
+
+
+CREATE TABLE spx.MONATSALTERZEIT (
+	MANR_F	VARCHAR(15) NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the employee in the database',
+	TAG_F INT NOT NULL FOREIGN KEY COMMENT 'Date in the schedule, expressed in days passed since 01/01/1990',
+	ARBEITSZEIT_VON	INT NOT NULL COMMENT 'Start time of the scheduled time period expressed in minutes passed since midnight',
+	ARBEITSZEIT_BIS	SMALLINT NOT NULL COMMENT 'End time of the time scheduled time period expressed in minutes passed since midnight',
+	MPEBENE	INT NOT NULL COMMENT 'Level of the plane',
+	EIGENSCHAFT_F VARCHAR(20) NOT NULL FOREIGN KEY COMMENT	'Name of the type of time',
+	DAUER INT NULL COMMENT	'Duration of the time period in minutes',
+          CONSTRAINT FK_MONATSALTERZEIT_MANR FOREIGN KEY (MANR_F) REFERENCES spx.MITARBEITER (NR),
+          CONSTRAINT FK_MONATSALTERZEIT_TAG FOREIGN KEY (TAG_F) REFERENCES spx.KALENDERTAG (KALENDERTAG)
+) COMMENT = 'Table with data about the planned working times and the planned clock in and clock out times';
+
+
+CREATE TABLE spx.MULTIGRP_MULTIGRPS (
+	MULTIGRP_F INT NOT NULL	FOREIGN KEY COMMENT 'Parent multischedule group that contains other multischedule groups',
+	CHILD_MULTIGRP_F INT NOT NULL FOREIGN KEY COMMENT 'Child multischedule group that is contained in the parent group',
+	VON INT	NOT NULL COMMENT 'Start date of assignment of the employee group to the multischedulegroup in days passed since 01/01/1990',
+	BIS INT	NOT NULL COMMENT 'End date of assignment of the employee group to the multischedulegroup in days passed since 01/01/1990',
+          CONSTRAINT FK_MULTIGRP_MULTIGRPS_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY)
+) COMMENT = 'Table with data about child multischedule groups assigned to a parent multischedule group';
+
+
+CREATE TABLE spx.MULTIGRP_KAL_HIST (
+	MULTIGRP_F INT	NOT NULL COMMENT 'Unique identifier for the multischedule group',
+	AB INT NOT NULL	 COMMENT 'Start date of assignment of calendar to the multischedulegroup in days passed since 01/01/1990',
+	KAL_F VARCHAR(20) NULL COMMENT 'Unique identifier for the calendar',
+         CONSTRAINT FK_MULTIGRP_KAL_HIST_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY),
+         CONSTRAINT FK_MULTIGRP_KAL_HIST_KAL FOREIGN KEY (KAL_F) REFERENCES spx.KALENDER(BEZEICHNER),
+) COMMENT = 'Table with historical data about the calendars assigned to an schedule group ';
+
+
+CREATE TABLE spx.MAGRP_KAL_HIST (
+	MAGRP_F	INT NOT NULL COMMENT 'Unique identifier for the employee group',
+	AB_DATUM INT NOT NULL COMMENT 'Start date of assignment of calendar to the employee group in days passed since 01/01/1990',
+	KAL_BEZ_F VARCHAR(20) NULL COMMENT 'Unique identifier for the calendar',
+         CONSTRAINT FK_MAGRP_KAL_HIST_MAGRP FOREIGN KEY (MAGRP_F) REFERENCES spx.MONATSPLANTEIL(PLANTEIL_NR),
+         CONSTRAINT FK_MAGRP_KAL_HIST_KAL_BEZ FOREIGN KEY (KAL_BEZ_F) REFERENCES spx.KALENDER(BEZEICHNER),
+) COMMENT = 'Table with historical data about the calendars assigned to an employee group ';
+
+
+CREATE TABLE spx.KALENDER (
+	BEZEICHNER VARCHAR(20) NOT NULL COMMENT 'Unique identifier for the calendar',
+	DEFAULT_FLAG tinyINT NULL COMMENT 'Indicates if it is the default calendar (1 means it is, 0 means is not)',
+	ABRECHNUNG_FLAG	tinyINT	NULL COMMENT 'Indicates if it is the assigend calendar (1 means it is, 0 means is not). If there is none assigned, the default is used',
+	EMAP VARCHAR(254) NULL COMMENT 'Long description of the calendar',
+) COMMENT = 'Table with data about the calendar';
+
+
+CREATE TABLE spx.KALENDERTAG (
+	KAL_BEZ_F VARCHAR(20) NOT NULL COMMENT 'Unique identifier for the calendar',
+	KALENDERTAG INT	NULL COMMENT 'Date',
+	TTKURZ_F VARCHAR(4) NULL COMMENT 'Name of the type of day'
+	TAGNAME	VARCHAR(20) NULL COMMENT 'Long name or description of the type of day'
+         CONSTRAINT FK_KALENDERTAG_KAL_BEZ FOREIGN KEY (KAL_BEZ_F) REFERENCES spx.KALENDER(BEZEICHNER),
+         CONSTRAINT FK_KALENDERTAG_TTKURZ FOREIGN KEY (TTKURZ_F) REFERENCES spx.TAGTYP(TTKURZ),
+) COMMENT = 'Table with data about the type of days in the calender';
+
+
+CREATE TABLE spx.TTWOTAGE (
+	KAL_BEZ_F VARCHAR(20) NOT NULL COMMENT 'Unique identifier for the calendar',
+	WOCHENTAG SMALLINT NOT NULL COMMENT 'Day of the week ID (0 is Monday, 6 is Sunday)',
+	TTKURZ_F VARCHAR(4) NULL COMMENT 'Name of the type of day'
+	  CONSTRAINT FK_TTWOTAGE_KAL_BEZ FOREIGN KEY (KAL_BEZ_F) REFERENCES spx.KALENDER(BEZEICHNER),
+	  CONSTRAINT FK_TTWOTAGE_TTKURZ FOREIGN KEY (TTKURZ_F) REFERENCES spx.TAGTYP(TTKURZ),
+) COMMENT = 'Table with data about the day types ';
+
+
+CREATE TABLE spx.BEST_SD (    
+	MULTIGRP_F INT NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the multischedule group in the database',
+	TAGNR SMALLINT NOT NULL COMMENT 'Date, expressed in days passed since 01/01/1990',
+	SD_FK INT NOT NULL FOREIGN KEY COMMENT 'Unique identifier for the shift in the database',
+	FKT_F VARCHAR(25) NOT NULL FOREIGN KEY COMMENT 'Name of the function',
+	MIN_WERT SMALLINT NOT NULL COMMENT 'Minimum value of the staffing needs. If the count of employees that work that day are below this value we are understaffed',
+ 	SOLL_WERT SMALLINT NOT NULL COMMENT 'Target value of the staffing needs. If the count of employees that work that day equal this value we are correctly staffed',
+	MAX_WERT SMALLINT NOT NULL COMMENT 'Maximum value of the staffing needs. If the count of employees that work that day are over this value we are overstaffed',
+	ISSECONDARY TINYINT NOT NULL COMMENT 'Indicates if the function is secondary. 1 means is secondary while 0 means it's primary',
+	  CONSTRAINT FK_BEST_SD_MULTIGRP FOREIGN KEY (MULTIGRP_F) REFERENCES spx.MULTIGRP(PRIMKEY),
+	  CONSTRAINT FK_BEST_SD_SD FOREIGN KEY (SD_FK) REFERENCES spx.S_DIENST(PRIMKEY),
+) COMMENT = 'Table with data about the amount of employees with a given function are needed for a shift on a given day';
+
+
+CREATE TABLE spx.SDMSM_TT (
+	PRF_F VARCHAR(10) NOT NULL COMMENT 'Name of the profile of daily needs for a function',
+	FKT_F VARCHAR(25) NOT NULL COMMENT 'Name of the function',
+	SD_FK INT NOT NULL COMMENT 'Unique identifier of the shift in the database',
+	TT_F VARCHAR(4)	NOT NULL COMMENT 'Name of the type of day',
+	MIN_WERT SMALLINT NULL COMMENT 'Minimum value of the staffing needs for thar type of day. If the count of employees that work that day are below this value we are understaffed',
+	SOLL_WERT SMALLINT NULL COMMENT	'Target value of the staffing needs for that type of day. If the count of employees that work that day equal this value we are correctly staffed',
+	MAX_WERT SMALLINT NULL COMMENT 'Maximum value of the staffing needs for that type of day. If the count of employees that work that day are over this value we are overstaffed',
+	  CONSTRAINT FK_SDMSM_TT_SD FOREIGN KEY (SD_FK) REFERENCES spx.S_DIENST(PRIMKEY),
+          CONSTRAINT FK_SDMSM_TT_TT FOREIGN KEY (_F) REFERENCES spx.TAGTYP(TTKURZ),
+) COMMENT = 'Table with data about the profiles of daily needs by function';
+
+
+CREATE TABLE spx.TAGTYP (
+	TTKURZ VARCHAR(4) NOT NULL PRIMARY KEY COMMENT 'Name of the day',
+	TTLANG VARCHAR(20) NOT NULL COMMENT 'Long name of the day',
+) COMMENT = 'Table with data about the visualization formats of the day types';

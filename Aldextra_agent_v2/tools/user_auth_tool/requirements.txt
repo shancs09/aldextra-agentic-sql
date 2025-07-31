@@ -1,0 +1,2 @@
+requests
+ibm-watsonx-orchestrate @ https://test-files.pythonhosted.org/packages/f4/30/b15ad94f35fbf56b96c1a70d620fe57ea7d4d0d520bc45a86a6979a7f4af/ibm_watsonx_orchestrate-1.7.0-py3-none-any.whl

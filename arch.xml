@@ -1,0 +1,175 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:139.0) Gecko/20100101 Firefox/139.0" version="27.2.0">
+  <diagram name="Agentic SQL Architecture - Extended" id="X9u2Nym-wT5fy_GxI5kU_extended">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="FE1" value="Frontend (Custom UI)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+          <mxGeometry x="10" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="AUTH1" value="Auth API" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#E0BBE4;strokeColor=#957DAD;" parent="1" vertex="1">
+          <mxGeometry x="150" y="300" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DB1" value="Database" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#CCE5FF;strokeColor=#6B99DA;" parent="1" vertex="1">
+          <mxGeometry x="800" y="100" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EMAIL_SERVICE1" value="Email Service" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#FFCC99;strokeColor=#CC7A00;" parent="1" vertex="1">
+          <mxGeometry x="600" y="320" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="2" value="watsonx-orchestrate" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC" parent="1" vertex="1">
+          <mxGeometry x="160" y="190" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="nlsqlv3agent" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=1;fillColor=#E1D5E7" parent="1" vertex="1">
+          <mxGeometry x="340" y="100" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="emailResultAgent" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=1;fillColor=#F8CECC" parent="1" vertex="1">
+          <mxGeometry x="340" y="240" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="/upload-schema" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="520" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="/generate-execute-result" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="520" y="120" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="/execute-sql" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="700" y="180" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="/format-result" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="700" y="240" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="/send-email" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="520" y="290" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="/no-send-email" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" parent="1" vertex="1">
+          <mxGeometry x="520" y="370" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="uZF8qt_Q_S3eEGy9utBU-19" value="/generate-sql" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#FFF2CC" vertex="1" parent="1">
+          <mxGeometry x="520" y="60" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" style="endArrow=block;html=1;strokeWidth=2" parent="1" source="2" target="3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" style="endArrow=block;html=1;strokeWidth=2" parent="1" source="3" target="6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="uZF8qt_Q_S3eEGy9utBU-19" target="7" edge="1">
+          <mxGeometry relative="1" as="geometry" >
+            <Array as="points">
+              <mxPoint x="780" y="90" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="14" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="6" target="8" edge="1">
+          <mxGeometry relative="1" as="geometry" >
+            <Array as="points">
+              <mxPoint x="600" y="265" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="15" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="2" target="4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="16" style="endArrow=block;html=1;strokeWidth=2" parent="1" source="4" target="9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="17" style="endArrow=block;html=1;strokeWidth=2;dashed=1" parent="1" source="2" target="5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="18" style="endArrow=block;html=1;strokeWidth=2;dashed=1" parent="1" source="4" target="10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uZF8qt_Q_S3eEGy9utBU-18" style="endArrow=block;html=1;strokeWidth=2;dashed=1;exitX=0.438;exitY=1.024;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.459;entryY=-0.035;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="310" as="sourcePoint" />
+            <mxPoint x="410" y="408" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="410" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uZF8qt_Q_S3eEGy9utBU-20" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="6" target="uZF8qt_Q_S3eEGy9utBU-19">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="150" as="sourcePoint" />
+            <mxPoint x="645" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+
+        <mxCell id="FE_ORCH_1" value="Natural Language Query" style="endArrow=block;html=1;strokeWidth=2;curved=1;" parent="1" source="FE1" target="2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="230" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="145" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ORCH_FE_1" value="Formatted Result" style="endArrow=block;html=1;strokeWidth=2;curved=1;dashed=1;" parent="1" source="8" target="FE1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="230" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="750" y="270" />
+              <mxPoint x="200" y="270" />
+              <mxPoint x="110" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ORCH_AUTH_1" value="API Key/Token Request" style="endArrow=block;html=1;strokeWidth=1;dashed=1;" parent="1" source="FE1" target="AUTH1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="260" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="110" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AUTH_ORCH_1" value="Token" style="endArrow=block;html=1;strokeWidth=1;dashed=1;" parent="1" source="AUTH1" target="2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="300" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="200" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="EXECUTE_DB_1" value="SQL Query" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="7" target="DB1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="165" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="800" y="165" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DB_EXECUTE_1" value="Query Results" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="DB1" target="7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="135" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="800" y="135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="SEND_EMAIL_SERVICE_1" value="Email Request" style="endArrow=block;html=1;strokeWidth=2;" parent="1" source="9" target="EMAIL_SERVICE1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="320" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="600" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

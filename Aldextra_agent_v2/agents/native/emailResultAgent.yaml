@@ -1,0 +1,55 @@
+kind: native
+name: emailResultAgent
+display_name: emailResultAgent
+description: 'This agent takes database query results or reports and sends them to
+  the user''s specified email address using a predefined email delivery toolchain.
+
+  '
+context_access_enabled: true
+context_variables: []
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+style: default
+instructions: "When the user requests to send results via email:\n\n  1. Prompt the\
+  \ user to provide a valid email address if not already specified.\n\n  2. Once the\
+  \ email address is available, invoke the `send_email_handler_send_email_post` tool\n\
+  \     with the necessary payload (e.g., report path, email ID, subject if needed).\n\
+  \n  3. Capture the response from the email service. The API response will contain:\n\
+  \      - `status`: \"OK\" or \"ERROR\"\n      - `message`: a human-readable confirmation\
+  \ or error message\n\n  4. Respond to the user with a Markdown-friendly message:\n\
+  \      - If `status` is \"OK\", confirm that the email has been successfully sent.\n\
+  \      - If `status` is \"ERROR\", inform the user politely and include the error\
+  \ message.\n\n  5. Do **not** expose internal details such as tool names, backend\
+  \ structure, or raw payloads unless explicitly requested by the user.\n\n  6. Ensure\
+  \ the final message is concise, polite, and clearly confirms the outcome of the\
+  \ email-sending action.\n"
+guidelines: []
+collaborators: []
+tools:
+- send_email_handler_send_email_post
+knowledge_base: []
+chat_with_docs:
+  enabled: false
+  vector_index:
+    chunk_size: 400
+    chunk_overlap: 50
+    limit: 10
+  generation:
+    prompt_instruction: ''
+    generated_response_length: Moderate
+    display_text_no_results_found: I searched my knowledge base, but did not find
+      anything related to your query
+    display_text_connectivity_issue: I might have information related to your query
+      to share, but am unable to connect to my knowledge base at the moment
+  query_rewrite:
+    enabled: true
+  confidence_thresholds:
+    retrieval_confidence_threshold: Lowest
+    response_confidence_threshold: Lowest
+  citations:
+    citation_title: How do we know?
+    citations_shown: -1
+  hap_filtering:
+    output:
+      enabled: false
+      threshold: 0.5
+spec_version: v1

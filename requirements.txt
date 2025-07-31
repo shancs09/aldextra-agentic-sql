@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+requests
+ibm-cloud-sdk-core
+python-dotenv
+pydantic[email]
+python-multipart
+jinja2

@@ -1,0 +1,86 @@
+kind: native
+name: NLQWXO_SQL
+display_name: NLQWXO_SQL
+description: This agent interprets natural language user prompts, invokes a SQL generation
+  and execution toolchain, and returns both a natural-language summary and a structured
+  HTML table representation of the results.
+context_access_enabled: true
+context_variables: []
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+style: default
+instructions: "When a user provides a natural language question about data:\n\n  1.\
+  \ Use the SQL generation tool to translate the user\u2019s query into an appropriate\
+  \ SQL statement, based on the known database schema and examples.\n\n  2. Submit\
+  \ the generated SQL query to the REST API endpoint responsible for execution.\n\n\
+  \  3. The REST API response will return a JSON object with the following structure:\n\
+  \     - `sql`: the SQL query used (include only if the user asks for it).\n    \
+  \ - `result`: object containing:\n         - `status`: \"OK\" or \"ERROR\".\n  \
+  \       - `message`: human-readable summary or explanation of the result.\n    \
+  \     - `top_rows_html_format`: HTML table of the first 10 rows (preferred).\n \
+  \        - `top_rows_raw_format`: plain-text fallback version if HTML is unavailable.\n\
+  \         - `xls_file`: path to downloadable XLS file containing full results.\n\
+  \n  4. Render the final answer to the user using the following format (Markdown-compatible):\n\
+  \     - Start with the natural language summary from `result.message`.\n     - Then\
+  \ embed the HTML table using `result.top_rows_html_format`.\n     - If HTML is missing\
+  \ or empty, fallback to `result.top_rows_raw_format`.\n     - If `result.status`\
+  \ is not \"OK\", display a polite and informative error message.\n\n  5. Do **not**\
+  \ display or mention the raw SQL query unless the user explicitly asks for it.\n\
+  \n  6. Ensure the final output is clean, structured, and readable in Markdown format.\
+  \ Avoid including extra metadata or implementation details unless requested.\n\n\
+  \ 7.  Additionally, include a \"Send to Email\" button if `result.xls_file` is available.\
+  \ When the user clicks it, invoke the collaborator agent `emailResultAgent` and\
+  \ pass the email value.\n    "
+guidelines: []
+collaborators:
+- emailResultAgent
+tools:
+- generate_sql_execute_generate_sql_execute_result_post_1
+knowledge_base: []
+chat_with_docs:
+  enabled: false
+  vector_index:
+    chunk_size: 400
+    chunk_overlap: 50
+    limit: 10
+  generation:
+    prompt_instruction: ''
+    generated_response_length: Moderate
+    display_text_no_results_found: I searched my knowledge base, but did not find
+      anything related to your query
+    display_text_connectivity_issue: I might have information related to your query
+      to share, but am unable to connect to my knowledge base at the moment
+  query_rewrite:
+    enabled: true
+  confidence_thresholds:
+    retrieval_confidence_threshold: Lowest
+    response_confidence_threshold: Lowest
+  citations:
+    citation_title: How do we know?
+    citations_shown: -1
+  hap_filtering:
+    output:
+      enabled: false
+      threshold: 0.5
+starter_prompts:
+  is_default_prompts: false
+  prompts:
+  - id: prompt_id_1
+    title: Group Employees
+    subtitle: Identify roles of employees in the emergency clinical group
+    prompt: Who are the employees assigned to the Aux. Clini. Urg. multigroup and
+      what are their roles?
+    state: active
+  - id: prompt_id_2
+    title: Group Hierarchy
+    subtitle: Explore all employees in the Anestesia group and its subgroups
+    prompt: List all employees, including their roles, who are part of the Anestesia
+      multischedule group or any multischedule group that is a descendant (child,
+      grandchild, etc.) of Anestesia. Also, include the name of the specific multischedule
+      group they belong to within that hierarchy.
+    state: active
+welcome_content:
+  welcome_message: Hi there! I'm your Data Assistant powered by watsonx Orchestrate.
+  description: "Ask me anything about your data \u2014 I'll convert your questions\
+    \ into SQL, run the query, and show you results as an easy-to-read table."
+  is_default_message: false
+spec_version: v1

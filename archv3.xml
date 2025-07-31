@@ -1,0 +1,190 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:139.0) Gecko/20100101 Firefox/139.0" version="27.2.0">
+  <diagram name="Agentic SQL Architecture - Pro Theme" id="pro-theme-arch-diagram">
+    <mxGraphModel dx="1600" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="UserUIEmbeddedOrchestrateBlock" value="User Interface (with Embedded Orchestrate)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;collapsible=0;container=1;recursiveResize=0;stackSpacing=0;strokeWidth=2;fillColor=#E8F0F8;swimlaneFillEnabled=1;rounded=1;arcSize=10;strokeColor=#B0C4DE;" vertex="1" parent="1">
+          <mxGeometry x="30" y="50" width="300" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="Frontend" value="Frontend (Custom UI)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#D6E5EE;strokeColor=#8FA2B7;fontStyle=1;" vertex="1" parent="UserUIEmbeddedOrchestrateBlock">
+          <mxGeometry x="10" y="40" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Orchestrate_Embedded" value="watsonx-orchestrate (Embedded APIs)" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#B0C4DE;strokeColor=#6A7A8C;fontStyle=1;fontColor=#2D3846;" vertex="1" parent="UserUIEmbeddedOrchestrateBlock">
+          <mxGeometry x="50" y="110" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="AuthServiceBlock" value="Authentication Service" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;collapsible=0;container=1;recursiveResize=0;stackSpacing=0;strokeWidth=2;fillColor=#E8F0F8;swimlaneFillEnabled=1;rounded=1;arcSize=10;strokeColor=#B0C4DE;" vertex="1" parent="1">
+          <mxGeometry x="360" y="50" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="AuthAPI" value="Auth API" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#B0C4DE;strokeColor=#6A7A8C;fontStyle=1;fontColor=#2D3846;" vertex="1" parent="AuthServiceBlock">
+          <mxGeometry x="15" y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="NL2SQLAgentBlock" value="NL2SQL Agent &amp; Tools" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;collapsible=0;container=1;recursiveResize=0;stackSpacing=0;strokeWidth=2;fillColor=#E8F0F8;swimlaneFillEnabled=1;rounded=1;arcSize=10;strokeColor=#B0C4DE;" vertex="1" parent="1">
+          <mxGeometry x="570" y="50" width="450" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="nlsqlv3agent" value="nlsqlv3agent" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=1;fillColor=#D6E5EE;strokeColor=#8FA2B7;fontStyle=1;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="10" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="upload_schema" value="/upload-schema" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="140" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="generate_sql" value="/generate-sql" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="250" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="execute_sql" value="/execute-sql" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="140" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="format_result" value="/format-result" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="250" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="generate_execute_result_note" value="&lt;u&gt;Orchestrated Flow:&lt;/u&gt;&lt;br&gt;/generate-execute-result" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;dashed=1;fillColor=#F5F5F5;strokeColor=#6B7B8B;fontColor=#2D3846;" vertex="1" parent="NL2SQLAgentBlock">
+          <mxGeometry x="360" y="50" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="EmailAgentBlock" value="Email Agent &amp; Tools" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;collapsible=0;container=1;recursiveResize=0;stackSpacing=0;strokeWidth=2;fillColor=#E8F0F8;swimlaneFillEnabled=1;rounded=1;arcSize=10;strokeColor=#B0C4DE;" vertex="1" parent="1">
+          <mxGeometry x="570" y="270" width="380" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="emailResultAgent" value="emailResultAgent" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=1;fillColor=#D6E5EE;strokeColor=#8FA2B7;fontStyle=1;" vertex="1" parent="EmailAgentBlock">
+          <mxGeometry x="10" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="send_email" value="/send-email" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="EmailAgentBlock">
+          <mxGeometry x="140" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="no_send_email" value="/no-send-email" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#C8D8E9;strokeColor=#7D91A6;" vertex="1" parent="EmailAgentBlock">
+          <mxGeometry x="250" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ExternalServicesBlock" value="External Services" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;collapsible=0;container=1;recursiveResize=0;stackSpacing=0;strokeWidth=2;fillColor=#E8F0F8;swimlaneFillEnabled=1;rounded=1;arcSize=10;strokeColor=#B0C4DE;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="50" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Database" value="Database" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#B0C4DE;strokeColor=#6A7A8C;fontStyle=1;fontColor=#2D3846;" vertex="1" parent="ExternalServicesBlock">
+          <mxGeometry x="25" y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EmailService" value="Email Service" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#B0C4DE;strokeColor=#6A7A8C;fontStyle=1;fontColor=#2D3846;" vertex="1" parent="ExternalServicesBlock">
+          <mxGeometry x="25" y="120" width="150" height="60" as="geometry" />
+        </mxCell>
+
+
+        <mxCell id="conn_UI_Auth_API" value="Auth Request" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;curved=1;strokeColor=#6B7B8B;fontColor=#2D3846;" parent="1" source="Orchestrate_Embedded" target="AuthAPI" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="160" as="sourcePoint" />
+            <mxPoint x="360" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn_Auth_API_UI" value="Token" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;curved=1;strokeColor=#6B7B8B;fontColor=#2D3846;" parent="1" source="AuthAPI" target="Orchestrate_Embedded" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="100" as="sourcePoint" />
+            <mxPoint x="330" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn_Orchestrate_NLSQL" value="Delegate Query" style="endArrow=block;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;curved=1;strokeColor=#2D3846;" parent="1" source="Orchestrate_Embedded" target="nlsqlv3agent" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="140" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="450" y="140" />
+              <mxPoint x="450" y="70" />
+              <mxPoint x="570" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn_Orchestrate_Email" value="Delegate Email" style="endArrow=block;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;curved=1;strokeColor=#2D3846;" parent="1" source="Orchestrate_Embedded" target="emailResultAgent" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="140" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="480" y="180" />
+              <mxPoint x="480" y="300" />
+              <mxPoint x="570" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn_NLSQL_UploadSchema" value="Admin / Setup" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#6B7B8B;fontColor=#2D3846;" parent="NL2SQLAgentBlock" source="nlsqlv3agent" target="upload_schema" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_NLSQL_GenSQL" value="" style="endArrow=block;html=1;strokeWidth=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6B7B8B;" parent="NL2SQLAgentBlock" source="nlsqlv3agent" target="generate_sql" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_NLSQL_ExecSQL" value="" style="endArrow=block;html=1;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#6B7B8B;" parent="NL2SQLAgentBlock" source="upload_schema" target="execute_sql" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_GenSQL_FormatResult" value="" style="endArrow=block;html=1;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#6B7B8B;" parent="NL2SQLAgentBlock" source="generate_sql" target="format_result" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="conn_NLSQL_GenExecResNote" value="Orchestrates" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6B7B8B;fontColor=#2D3846;" parent="NL2SQLAgentBlock" source="nlsqlv3agent" target="generate_execute_result_note" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="70" />
+              <mxPoint x="360" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn_GenExecResNote_ExecSQL" value="" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#6B7B8B;" parent="NL2SQLAgentBlock" source="generate_execute_result_note" target="execute_sql" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="110" />
+              <mxPoint x="240" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn_GenExecResNote_FormatResult" value="" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#6B7B8B;" parent="NL2SQLAgentBlock" source="generate_execute_result_note" target="format_result" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="110" />
+              <mxPoint x="250" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <mxCell id="conn_ExecSQL_DB_Query" value="SQL Query" style="endArrow=block;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;curved=1;strokeColor=#2D3846;" parent="1" source="execute_sql" target="Database" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="120" />
+              <mxPoint x="1050" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn_DB_ExecSQL_Result" value="Query Results" style="endArrow=block;html=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;curved=1;strokeColor=#2D3846;" parent="1" source="Database" target="execute_sql" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1050" y="100" />
+              <mxPoint x="1020" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn_EmailAgent_SendEmail" value="" style="endArrow=block;html=1;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#2D3846;" parent="EmailAgentBlock" source="emailResultAgent" target="send_email" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_EmailAgent_NoSendEmail" value="" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#6B7B8B;" parent="EmailAgentBlock" source="emailResultAgent" target="no_send_email" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="conn_SendEmail_EmailService" value="Email Request" style="endArrow=block;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;curved=1;strokeColor=#2D3846;" parent="1" source="send_email" target="EmailService" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="320" />
+              <mxPoint x="1050" y="360" />
+              <mxPoint x="1100" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn_FormatResult_EmailAgent" value="Formatted Results" style="endArrow=block;html=1;strokeWidth=1;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;curved=1;strokeColor=#6B7B8B;fontColor=#2D3846;" parent="1" source="format_result" target="emailResultAgent" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="250" />
+              <mxPoint x="750" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

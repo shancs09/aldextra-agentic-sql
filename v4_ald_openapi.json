@@ -1,0 +1,187 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0",
+        "description":"Aldextra Gensql code engine ser"
+    },
+     "servers": [
+    {
+      "url": "https://nlsql-v2.1x53yj6izib2.eu-de.codeengine.appdomain.cloud",
+      "description": "Aldextra Gensql code engine server"
+      
+    }
+    ],
+    
+    "paths": {
+        "/generate-sql-execute-result": {
+            "post": {
+                "summary": "Generate Sql Execute",
+                "description": "Generate Sql and Execute Results",
+                "operationId": "generate_sql_execute_generate_sql_execute_result_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QueryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuerySQLExecutionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "QueryRequest": {
+                "properties": {
+                    "user_query": {
+                        "type": "string",
+                        "title": "User Query"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_query"
+                ],
+                "title": "QueryRequest"
+            },
+            "QuerySQLExecutionResponse": {
+                "properties": {
+                    "user_query": {
+                        "type": "string",
+                        "title": "User Query"
+                    },
+                    "sql": {
+                        "type": "string",
+                        "title": "Sql"
+                    },
+                    "result": {
+                        "$ref": "#/components/schemas/SQLExecutionResult"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_query",
+                    "sql",
+                    "result"
+                ],
+                "title": "QuerySQLExecutionResponse"
+            },
+            "SQLExecutionResult": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "xls_file": {
+                        "type": "string",
+                        "title": "Xls File"
+                    },
+                    "top_rows_raw_format": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Top Rows Raw Format"
+                    },
+                    "top_rows_html_format": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Top Rows Html Format"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message",
+                    "status",
+                    "xls_file"
+                ],
+                "title": "SQLExecutionResult"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

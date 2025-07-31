@@ -13,26 +13,36 @@ This FastAPI application allows users to convert **natural language queries into
 
 ```
 your_project/
-├── db/
+.
+├── Aldextra_agent_v2
+│   ├── agents
+│   │   └── native
+│   │       ├── Aldextra_agent_v2.yaml
+│   │       ├── authentication_agent.yaml
+│   │       ├── emailResultAgent.yaml
+│   │       └── NLQWXO_SQL.yaml
+│   └── tools
+│       └── user_auth_tool
+│           ├── auth_tool.py
+│           └── requirements.txt
+├── arch.xml
+├── db
+│   ├── db_schema_llm_summary.txt
 │   └── db_schema.txt
 ├── Dockerfile
-├── examples/
+├── examples
 │   └── few_shot_examples.py
 ├── main.py
-├── nlsql-v3agent/
-│   └── agents/
-│       └── native/
-│           ├── emailResultAgent.yaml
-│           └── nlsqlagent_2268HN.yaml
-├── prompts/
+├── prompts
 │   └── system_prompt_template.py
 ├── readme.md
 ├── requirements.txt
-├── services/
+├── services
 │   └── sql_rest_executor.py
-├── static/
-│   └── AI-Agents.jpg.webp
-├── templates/
+├── static
+│   ├── AI-Agents.jpg.webp
+│   └── chat_logo.png
+├── templates
 │   ├── index.html
 │   └── indexv2.html
 └── v4_ald_openapi.json
@@ -221,7 +231,7 @@ docker run -p 8000:8000 --env-file .env nlsql-watsonx
 
 ## 🧑‍💻 Author
 
-Developed by [Shan S.](https://github.com/your-profile)
+Developed by [Shan S](https://github.com/shancs09),[Muralidhar](https://github.com/muralidharchavan)
 
 ---
 

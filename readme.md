@@ -73,7 +73,7 @@ This REST API is integrated as a **Tool** within **Watsonx Orchestrate**, enabli
 
 ### 🧠 Agent Configuration
 
-* Agent YAMLs like `nlsqlagent_2268HN.yaml` and `emailResultAgent.yaml` in `nlsql-v3agent/agents/native/` define:
+* Agent YAMLs like `NLQWXO_SQL.yaml` and `emailResultAgent.yaml` in `Aldextra_agent_v2/agents/native/` define:
 
   * Task grounding and tool bindings
   * Dialogue state flow and decisions
@@ -83,7 +83,7 @@ This REST API is integrated as a **Tool** within **Watsonx Orchestrate**, enabli
 ### 🗂️ Typical Agent Flow
 
 1. **User Input**: "List all failed transactions for June."
-2. **Agent Trigger**: `nlsqlagent_2268HN.yaml` fires, generates SQL.
+2. **Agent Trigger**: `NLQWXO_SQL.yaml` fires, generates SQL.
 3. **Tool Call**: Executes `/generate-sql-execute-result`.
 4. **Post-Process**: Returns results, optionally triggers `/send-email` via `emailResultAgent.yaml`.
 

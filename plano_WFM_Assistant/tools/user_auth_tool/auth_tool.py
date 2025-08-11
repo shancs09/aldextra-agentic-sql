@@ -14,7 +14,7 @@ def user_auth_tool(username: str, password: str) -> str:
    :returns: authentication result
    """
 
-   URL = "https://auth-trans.1x53yj6izib2.eu-de.codeengine.appdomain.cloud/check_user"
+   URL = "https://nlsql-v3.1x53yj6izib2.eu-de.codeengine.appdomain.cloud/check_user"
    
 
    params = {

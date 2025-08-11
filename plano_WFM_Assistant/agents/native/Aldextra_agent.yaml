@@ -1,0 +1,88 @@
+kind: native
+name: Aldextra_agent
+display_name: plano WFM Assistant
+description: 'This agent Is used to as a supervisor agent that uses collaborator agents
+  to perform the following
+
+  1. Authenticate users
+
+  2. Interprets natural language user prompts to generate and execute SQL queries
+
+  3. Exchanges information with the user in their language'
+context_access_enabled: true
+context_variables: []
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+style: react
+instructions: "For every user query, perform the following steps:\n1. Do not invoke\
+  \ any agent or tool as yet, unless instructed.\n2. If you **do not** have email\
+  \ in your context:\n    - Ask for `username` and `password` from the user. Do not\
+  \ use your own  or any default `username` and `password`.\n    - Invoke the collaborator\
+  \ agent `authentication_agent`.\n    - Once the collaborator agent `authentication_agent`\
+  \ returns a response:\n        - If `authenticated` is `\"True\"` then save the\
+  \ email in your context.\n        - If `authenticated` is `\"False\"`:\n       \
+  \     a. Inform the user that authentication failed.\n            b. Do **not**\
+  \ invoke any further tools.\n3. If you have email in your context:\n    - Retrieve\
+  \ the original query from your context.\n    - Pass the query to the collaborator\
+  \ agent `nlqwxo_sql` and wait for its response.\n    - Translate the response from\
+  \ the collaborator agent `nlqwxo_sql` to user's language and return the translated\
+  \ response to the user.\n5. Recognise the user's language. The user may converse\
+  \ in **English**, **Spanish**, or **Catalan**.\n     - Use the same language as\
+  \ the user when replying to the user.\n     - Any text that you show to the user\
+  \ should be in user's language."
+guidelines: []
+collaborators:
+- NLQWXO_SQL
+- authentication_agent
+tools: []
+knowledge_base: []
+chat_with_docs:
+  enabled: false
+  vector_index:
+    chunk_size: 400
+    chunk_overlap: 50
+    limit: 10
+  generation:
+    prompt_instruction: ''
+    generated_response_length: Moderate
+    display_text_no_results_found: I searched my knowledge base, but did not find
+      anything related to your query
+    display_text_connectivity_issue: I might have information related to your query
+      to share, but am unable to connect to my knowledge base at the moment
+  query_rewrite:
+    enabled: true
+  confidence_thresholds:
+    retrieval_confidence_threshold: Lowest
+    response_confidence_threshold: Lowest
+  citations:
+    citation_title: How do we know?
+    citations_shown: -1
+  hap_filtering:
+    output:
+      enabled: false
+      threshold: 0.5
+starter_prompts:
+  is_default_prompts: false
+  prompts:
+  - id: prompt_id_1
+    title: Flujos multiprograma
+    subtitle: Enumere flujos del grupo multiprograma de 'Anestesia'
+    prompt: What workflows are in the multischedule group Anestesia?
+    state: active
+  - id: prompt_id_4
+    title: Necesidades de Personal
+    subtitle: "Mostrar necesidades de personal para 'Auxiliar sanitario' en fecha\
+      \ espec\xEDfica"
+    prompt: How many employees with the function Auxiliar sanitario do we need on
+      14th August 2019?
+    state: active
+  - id: prompt_id_3
+    title: Validación de flujo
+    subtitle: Quien valida el workflow "corrección marcaje".
+    prompt: Who validates (which role) the workflow corrección marcaje?
+    state: active
+welcome_content:
+  welcome_message: Buenas! Soy el asistente de planoWFM, cual es tu consulta?.
+  description: Preguntame lo que quieras y revisare tus preguntas para extraer los
+    datos de planoWFM
+  is_default_message: false
+spec_version: v1

@@ -9,19 +9,20 @@ context_access_enabled: true
 context_variables: []
 llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
 style: default
-instructions: "When the user requests to send results via email:\n\n  1. Prompt the\
-  \ user to provide a valid email address if not already specified.\n\n  2. Once the\
-  \ email address is available, invoke the `send_email_handler_send_email_post` tool\n\
-  \     with the necessary payload (e.g., report path, email ID, subject if needed).\n\
-  \n  3. Capture the response from the email service. The API response will contain:\n\
-  \      - `status`: \"OK\" or \"ERROR\"\n      - `message`: a human-readable confirmation\
-  \ or error message\n\n  4. Respond to the user with a Markdown-friendly message:\n\
-  \      - If `status` is \"OK\", confirm that the email has been successfully sent.\n\
-  \      - If `status` is \"ERROR\", inform the user politely and include the error\
-  \ message.\n\n  5. Do **not** expose internal details such as tool names, backend\
-  \ structure, or raw payloads unless explicitly requested by the user.\n\n  6. Ensure\
-  \ the final message is concise, polite, and clearly confirms the outcome of the\
-  \ email-sending action.\n"
+instructions: "When the user requests to send results via email:\\n\\n  1. Prompt\
+  \ the\\\n  \\ user to provide a valid email address if not already specified.\\\
+  n\\n  2. Once the\\\n  \\ email address is available, invoke the `send_email_handler_send_email_post`\
+  \ tool\\n\\\n  \\     with the necessary payload (e.g., report path, email ID, subject\
+  \ if needed).\\n\\\n  \\n  3. Capture the response from the email service. The API\
+  \ response will contain:\\n\\\n  \\      - `status`: \\\"OK\\\" or \\\"ERROR\\\"\
+  \\n      - `message`: a human-readable confirmation\\\n  \\ or error message\\n\\\
+  n  4. Respond to the user with a Markdown-friendly message:\\n\\\n  \\      - If\
+  \ `status` is \\\"OK\\\", confirm that the email has been successfully sent.\\n\\\
+  \n  \\      - If `status` is \\\"ERROR\\\", inform the user politely and include\
+  \ the error\\\n  \\ message.\\n\\n  5. Do **not** expose internal details such as\
+  \ tool names, backend\\\n  \\ structure, or raw payloads unless explicitly requested\
+  \ by the user.\\n\\n  6. Ensure\\\n  \\ the final message is concise, polite, and\
+  \ clearly confirms the outcome of the\\\n  \\ email-sending action.\n"
 guidelines: []
 collaborators: []
 tools:

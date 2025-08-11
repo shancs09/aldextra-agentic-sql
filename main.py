@@ -6,8 +6,7 @@ from ibm_cloud_sdk_core import IAMTokenManager
 from dotenv import load_dotenv
 from services.sql_rest_executor import execute_sql_rest, init_mysql_connection,extract_top_rows_html,send_email,no_send_email
 from examples.few_shot_examples import example_pairs
-from prompts.system_prompt_template import MYSQL_SYSTEM_PROMPT_TEMPLATE,POSTGRES_SYSTEM_PROMPT_TEMPLATE,SQL_SYSTEM_PROMPT_TEMPLATE,SCHEMA_LLM_SUMMARY_PROMPT,SQL_EXECUTION_FEEDBACK_TEMPLATE
-
+import prompts.system_prompt_template as prompt_templates
 from fastapi import UploadFile, File, HTTPException,APIRouter,FastAPI, Request
 from fastapi.responses import JSONResponse,HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,7 +21,12 @@ wx_service_url = os.getenv('wx_service_url')
 wx_project_id = os.getenv('wx_project_id')
 
 wx_model_id=os.getenv('wx_model_id')
+trans_wx_model_id=os.getenv('trans_wx_model_id')
 wx_model_param_max_tokens=os.getenv('wx_model_param_max_tokens')
+
+#
+AUTH_API_KEY = os.getenv('AUTH_API_KEY')
+AUTH_API_URL = os.getenv('AUTH_API_URL')
 
 # Prepare few-shot examples
 schema_file_path = "db/db_schema.txt"
@@ -30,11 +34,11 @@ schema_summary_file="db/db_schema_llm_summary.txt"
 
 db_engine = os.getenv('DB_ENGINE', '').lower()
 if db_engine == 'mysql':
-    SYSTEM_PROMPT_TEMPLATE = MYSQL_SYSTEM_PROMPT_TEMPLATE
+    SYSTEM_PROMPT_TEMPLATE = prompt_templates.MYSQL_SYSTEM_PROMPT_TEMPLATE
 elif db_engine == 'postgres':
-    SYSTEM_PROMPT_TEMPLATE = POSTGRES_SYSTEM_PROMPT_TEMPLATE
+    SYSTEM_PROMPT_TEMPLATE = prompt_templates.POSTGRES_SYSTEM_PROMPT_TEMPLATE
 elif db_engine == 'mssql':
-    SYSTEM_PROMPT_TEMPLATE = SQL_SYSTEM_PROMPT_TEMPLATE
+    SYSTEM_PROMPT_TEMPLATE = prompt_templates.SQL_SYSTEM_PROMPT_TEMPLATE
 else:
     raise ValueError("Invalid or missing DB_ENGINE. Must be 'mysql' or 'postgres'.")
 
@@ -68,6 +72,23 @@ class EmailRequest(BaseModel):
 
 class SchemaSummaryResponse(BaseModel):
     summary: str
+
+class TranslateToEnglishRequest(BaseModel):
+    original_text: str
+
+class TranslateToEnglishResponse(BaseModel):
+    original_text: str
+    translated_text: str
+    detected_language: str
+
+class TranslateFromEnglishRequest(BaseModel):
+    sql_result_explanation: str
+    target_language: str
+
+class TranslateFromEnglishResponse(BaseModel):
+    sql_result_explanation: str
+    target_language: str
+    translated_text: str
 
 
 class Prompt:
@@ -155,7 +176,7 @@ def build_retry_prompt(original_prompt: str, error_messages: List[str]) -> str:
 
     feedback_blocks = ""
     for i, err in enumerate(error_messages, start=1):
-        feedback_blocks += SQL_EXECUTION_FEEDBACK_TEMPLATE.format(
+        feedback_blocks += prompt_templates.SQL_EXECUTION_FEEDBACK_TEMPLATE.format(
             attempt=i,
             error_message=err.strip()
         )
@@ -174,10 +195,6 @@ async def generate_sql_execute(query_request: QueryRequest):
             schema_summary = file.read()
     else:
         schema_summary = "NA"
-        
-    # with open(schema_summary_file, "r") as file:
-    #     schema_summary = file.read()
-
 
     user_query = query_request.user_query
 
@@ -210,13 +227,6 @@ async def generate_sql_execute(query_request: QueryRequest):
             try:
                 llm_response = prompt.generate(current_prompt, model_id, parameters)
                 print("llm_response:",llm_response)
-                # Parse string/dict if needed
-                if isinstance(llm_response, str):
-                    try:
-                        llm_response = json.loads(llm_response)
-                    except json.JSONDecodeError:
-                        raise HTTPException(status_code=400, detail="Invalid response format from LLM.")
-
                 # Check for error in the response (common key 'errors')
                 if "errors" in llm_response:
                     error_messages = "; ".join(err.get("message", "") for err in llm_response["errors"])
@@ -361,7 +371,7 @@ async def generate_schema_summary():
     with open(schema_file_path, "r") as file:
         schema_ddl = file.read()
 
-    system_prompt = SCHEMA_LLM_SUMMARY_PROMPT.format(schema_ddl=schema_ddl)
+    system_prompt =prompt_templates.SCHEMA_LLM_SUMMARY_PROMPT.format(schema_ddl=schema_ddl)
 
     prompt = Prompt(api_key=wx_api_key, project_id=wx_project_id, service_url=wx_service_url)
     model_id = wx_model_id
@@ -378,14 +388,110 @@ async def generate_schema_summary():
         summary_file.write(summary_text)
     return SchemaSummaryResponse(summary=summary_text)
 
+# @app.post("/translate-to-english", response_model=TranslateToEnglishResponse)
+# async def translate_to_english(req: TranslateToEnglishRequest):
+#     prompt_text = prompt_templates.TRANSLATE_AND_DETECT_PROMPT.format(original_text=req.original_text)
 
+#     prompt = Prompt(api_key=wx_api_key, project_id=wx_project_id, service_url=wx_service_url)
+#     model_id = trans_wx_model_id
+#     parameters = {
+#         "decoding_method": "greedy",
+#         "max_new_tokens": 150,
+#         "stop_sequences": []
+#     }
+
+#     try:
+#         llm_response = prompt.generate(prompt_text, model_id, parameters)
+#         llm_response = llm_response.strip()
+
+#         json_start = llm_response.find("{")
+#         json_end = llm_response.rfind("}") + 1
+#         json_str = llm_response[json_start:json_end]
+
+#         data = json.loads(json_str)
+
+#         return TranslateToEnglishResponse(
+#             original_text=data.get("original_text", req.original_text),
+#             translated_text=data.get("translated_text", ""),
+#             detected_language=data.get("detected_language", "Unknown")
+#         )
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Translation to English failed: {str(e)}")
+
+
+# @app.post("/translate-from-english", response_model=TranslateFromEnglishResponse)
+# async def translate_from_english(req: TranslateFromEnglishRequest):
+#     def is_message_empty(message: str) -> bool:
+#         stripped = message.strip().lower()
+#         return not stripped or stripped == "<pre></pre>"
+
+#     fallback_text = "No results found"
+#     explanation_to_use = fallback_text if is_message_empty(req.sql_result_explanation) else req.sql_result_explanation
+
+#     prompt_text = prompt_templates.REVERSE_TRANSLATION_PROMPT.format(
+#         sql_result_explanation=explanation_to_use,
+#         target_language=req.target_language
+#     )
+
+#     prompt = Prompt(api_key=wx_api_key, project_id=wx_project_id, service_url=wx_service_url)
+#     parameters = {
+#         "decoding_method": "greedy",
+#         "max_new_tokens": 200,
+#         "stop_sequences": []
+#     }
+
+#     try:
+#         raw_response = prompt.generate(prompt_text, model_id=trans_wx_model_id, parameters=parameters)
+#         llm_response = raw_response.strip()
+
+#         # Remove markdown code fences like ```json ... ```
+#         llm_response = re.sub(r"^```json\s*|```$", "", llm_response, flags=re.MULTILINE).strip()
+
+#         # Extract JSON object from response
+#         json_start = llm_response.find("{")
+#         json_end = llm_response.rfind("}") + 1
+#         if json_start == -1 or json_end == -1:
+#             raise ValueError("JSON object not found in LLM response")
+
+#         json_str = llm_response[json_start:json_end]
+
+#         data = json.loads(json_str)
+
+#         return TranslateFromEnglishResponse(
+#             sql_result_explanation=data.get("sql_result_explanation", req.sql_result_explanation),
+#             target_language=data.get("target_language", req.target_language),
+#             translated_text=data.get("translated_text", "").strip()
+#         )
+
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Translation from English failed: {str(e)}")
 
 # Render index.html at "/"
+
+class UserCreds(BaseModel):
+    username: str
+    password: str
+    
+@app.post("/check_user")
+async def check_user(creds: UserCreds):
+    if not AUTH_API_KEY:
+        raise HTTPException(status_code=500, detail="API key not configured")
+    url = f"{AUTH_API_URL}?user={creds.username}&password={creds.password}"
+    headers = {
+        "x-api-key": AUTH_API_KEY
+    }
+    try:
+        response = requests.post(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # Route for v2 with float layout
-@app.get("/v2", response_class=HTMLResponse)
+@app.get("/ml", response_class=HTMLResponse)
 async def serve_index_v2(request: Request):
-    return templates.TemplateResponse("indexv2.html", {"request": request})
+    return templates.TemplateResponse("index_multi_lingual.html", {"request": request})

@@ -12,8 +12,7 @@ instructions: "You should follow the below sequence strictly\n\n1. Prompt the us
   \ from the user.\n\n4. Only when **both** username and password are available, invoke\
   \ the tool `user_auth_tool`.\n\n5. Capture the response from the tool. The API response\
   \ will contain:\n   - `authenticated`: `\"True\"` or `\"False\"`\n   - `email`:\
-  \ the email ID of the user\n   - `message`: Human-readable message\n   - `username`:\
-  \ the username of the user\n   - `password`: the password of the user\n\n6. Respond\
+  \ the email ID of the user\n   - `message`: Human-readable message\n\n6. Respond\
   \ to the user with a Markdown-friendly message:\n   - If `authenticated` is `\"\
   True\"`, confirm that the user has been successfully authenticated and display the\
   \ `email`.\n   - If `authenticated` is `\"False\"`, inform the user politely.\n\n\

@@ -8,33 +8,35 @@ context_access_enabled: true
 context_variables: []
 llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
 style: default
-instructions: "When a user provides a natural language question about data:\n\n  1.\
-  \ Use the SQL generation tool to translate the user\u2019s query into an appropriate\
-  \ SQL statement, based on the known database schema and examples.\n\n  2. Submit\
-  \ the generated SQL query to the REST API endpoint responsible for execution.\n\n\
-  \  3. The REST API response will return a JSON object with the following structure:\n\
-  \     - `sql`: the SQL query used (include only if the user asks for it).\n    \
-  \ - `result`: object containing:\n         - `status`: \"OK\" or \"ERROR\".\n  \
-  \       - `message`: human-readable summary or explanation of the result.\n    \
-  \     - `top_rows_html_format`: HTML table of the first 10 rows (preferred).\n \
-  \        - `top_rows_raw_format`: plain-text fallback version if HTML is unavailable.\n\
-  \         - `xls_file`: path to downloadable XLS file containing full results.\n\
-  \n  4. Render the final answer to the user using the following format (Markdown-compatible):\n\
-  \     - Start with the natural language summary from `result.message`.\n     - Then\
-  \ embed the HTML table using `result.top_rows_html_format`.\n     - If HTML is missing\
-  \ or empty, fallback to `result.top_rows_raw_format`.\n     - If `result.status`\
-  \ is not \"OK\", display a polite and informative error message.\n\n  5. Do **not**\
-  \ display or mention the raw SQL query unless the user explicitly asks for it.\n\
-  \n  6. Ensure the final output is clean, structured, and readable in Markdown format.\
-  \ Avoid including extra metadata or implementation details unless requested.\n\n\
-  \ 7.  Additionally, include a \"Send to Email\" button if `result.xls_file` is available.\
-  \ When the user clicks it, invoke the collaborator agent `emailResultAgent` and\
-  \ pass the email value.\n    "
+instructions: "When a user provides a natural language question:\n\n  1. If the input\
+  \ is not in English, use `translate-to-english` to translate it to English first.\n\
+  \  \n  2. Use `generate_sql_execute` to:\n     - Generate an appropriate SQL query\
+  \ based on the English input and the known database schema.\n     - Execute the\
+  \ SQL query using a REST API and return the result, which includes:\n        - `message`:\
+  \ a short explanation of the data.\n        - `top_rows_html_format`: HTML preview\
+  \ of the first 10 rows.\n        - `xls_file`: downloadable spreadsheet of the full\
+  \ results.\n  \n3. Generate `sql_result_explanation`:\n   - Parse and analyze the\
+  \ content of `result.message`, which may include formatted preview text or HTML\
+  \ tags (e.g. ``, ``).\n   - From the parsed content, generate a **brief natural\
+  \ language summary** describing what the table contains (e.g., \"List of employees\
+  \ with their IDs and names\").\n   - This explanation must be concise and not replicate\
+  \ the data itself.\n\n  4. If the input language \u2260 English:\n     - Use `translate-from-english`\
+  \ to translate only the `sql_result_explanation` back to the original language.\n\
+  \     - Do **not** translate or summarize the entire table content.\n     - If the\
+  \ message is empty or non-informative, skip the translation or use a default fallback\
+  \ like: \n       `\"Mostrando los primeros resultados a continuaci\xF3n:\"` (for\
+  \ Spanish).\n\n  5. Display the final output using the following format (Markdown-compatible):\n\
+  \     - Show the translated `result.message` (if available).\n     - Then embed\
+  \ `top_rows_html_format` directly.\n     - If HTML is missing, fallback to `top_rows_raw_format`.\n\
+  \     - If `status` is \"ERROR\", show a friendly, localized error message.\n\n\
+  \  6. Do not show or mention the SQL query unless the user explicitly asks.\n\n\
+  \  7. If `xls_file` is present, include a \"Send to Email\" (translated) button\
+  \ that triggers the `emailResultAgent`.\n"
 guidelines: []
 collaborators:
 - emailResultAgent
 tools:
-- generate_sql_execute_generate_sql_execute_result_post_1
+- generate_sql_execute_result
 knowledge_base: []
 chat_with_docs:
   enabled: false

@@ -1,0 +1,61 @@
+kind: native
+name: QueryCraftAgent_5714Xe
+display_name: QueryCraftAgent
+description: 'Interprets an English natural-language question, generates and executes
+  a SQL query, and returns both an English summary and raw/HTML table data.
+
+  '
+context_access_enabled: true
+context_variables: []
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+style: react
+instructions: "\nWhen a user provides a natural language question (always in English):\n\
+  \n1. SQL Generation & Execution\n   - Call `generate_sql_execute` with the English\
+  \ input and your database schema.\n   - Capture its JSON response, which includes:\n\
+  \     - `message`: a short, possibly HTML-tagged explanation of the result (in English).\n\
+  \     - `top_rows_html_format`: an HTML table preview of the first 10 rows.\n  \
+  \   - `top_rows_raw_format`: a plain-text fallback table.\n     - `xls_file`: a\
+  \ link or path to a full-results spreadsheet.\n     - `status`: `\"OK\"` or `\"\
+  ERROR\"`.\n\n2. Build a concise **English** summary\n   - Parse and analyze `message`\
+  \ (removing any surrounding `` or HTML tags).\n   - Generate a **brief natural-language**\
+  \ summary describing the table\u2019s structure/intent without repeating row values.\n\
+  \   - Return this as a new field:\n     ```\n     \"sql_result_explanation\": \"\
+  List of shifts with the number of employees per shift.\"\n     ```\n\n3. Final Output\n\
+  \   - Always return a JSON object with these fields:\n     ```json\n     {\n   \
+  \    \"sql_result_explanation\": \"\",\n       \"top_rows_html_format\": \"...\"\
+  ,\n       \"top_rows_raw_format\": \"...\",\n       \"xls_file\": \"...\",\n   \
+  \    \"status\": \"OK\" | \"ERROR\"\n     }\n     ```\n   - Do NOT perform any language\
+  \ detection or translation.\n   - Do NOT include the raw SQL query.\n   - If `status`\
+  \ is `\"ERROR\"`, set `\"sql_result_explanation\"` to an English error message like\
+  \ `\"An error occurred while fetching results.\"`\n\nInput: `{user_query_in_English}`"
+guidelines: []
+collaborators: []
+tools:
+- generate_sql_execute_result
+knowledge_base: []
+chat_with_docs:
+  enabled: false
+  vector_index:
+    chunk_size: 400
+    chunk_overlap: 50
+    limit: 10
+  generation:
+    prompt_instruction: ''
+    generated_response_length: Moderate
+    display_text_no_results_found: I searched my knowledge base, but did not find
+      anything related to your query
+    display_text_connectivity_issue: I might have information related to your query
+      to share, but am unable to connect to my knowledge base at the moment
+  query_rewrite:
+    enabled: true
+  confidence_thresholds:
+    retrieval_confidence_threshold: Lowest
+    response_confidence_threshold: Lowest
+  citations:
+    citation_title: How do we know?
+    citations_shown: -1
+  hap_filtering:
+    output:
+      enabled: false
+      threshold: 0.5
+spec_version: v1

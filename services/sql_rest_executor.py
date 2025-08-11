@@ -1,7 +1,7 @@
 import time
 import requests
 from requests.exceptions import RequestException, ConnectionError
-import os,json
+import os,json,re
 from dotenv import load_dotenv
 import re
 from html import escape
@@ -21,6 +21,46 @@ DB_PARAMS = {
     "db_host": os.getenv("DB_HOST"),
     "db_port": os.getenv("DB_PORT")
 }
+
+
+
+# # Add your domain-specific known labels here
+# KNOWN_LITERALS = {
+#     "Rehabilitación", "Cambio de turno", "M19h", "Enf. Lab", "Noche", "Tarde"
+# }
+
+# def quote_known_literals(text: str) -> str:
+#     # Regex to detect quotes
+#     quote_pattern = re.compile(r"(['\"‘’“”]).*?\1")
+    
+#     # Keep track of which parts are already quoted
+#     quoted_spans = [(m.start(), m.end()) for m in quote_pattern.finditer(text)]
+    
+#     def is_in_quoted_span(pos):
+#         return any(start <= pos < end for start, end in quoted_spans)
+    
+#     for literal in KNOWN_LITERALS:
+#         # Find all occurrences case-insensitive
+#         for match in re.finditer(re.escape(literal), text, re.IGNORECASE):
+#             start, end = match.start(), match.end()
+#             if not is_in_quoted_span(start):
+#                 # Insert quotes around the literal
+#                 # Use original casing from text to preserve appearance
+#                 original_literal = text[start:end]
+#                 quoted_literal = f"'{original_literal}'"
+#                 # Replace only that occurrence
+#                 text = text[:start] + quoted_literal + text[end:]
+                
+#                 # Update quoted spans after replacement
+#                 quoted_spans.append((start, start + len(quoted_literal)))
+                
+#     return text
+
+# def prepare_text_for_translation(user_input: str) -> str:
+#     # Auto-quote known literals first
+#     text_with_quotes = quote_known_literals(user_input)
+#     return text_with_quotes
+
 
 def init_mysql_connection(retries: int = 3, backoff: float = 2.0) -> str:
     """Initialize the MySQL DB connection via REST API with retries."""

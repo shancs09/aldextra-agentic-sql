@@ -14,7 +14,8 @@ def user_auth_tool(username: str, password: str) -> str:
    :returns: authentication result
    """
 
-   URL = "https://email-auth.1x53yj6izib2.eu-de.codeengine.appdomain.cloud/check_user"
+   URL = "https://auth-trans.1x53yj6izib2.eu-de.codeengine.appdomain.cloud/check_user"
+   
 
    params = {
     "username": username,
@@ -30,23 +31,21 @@ def user_auth_tool(username: str, password: str) -> str:
          status = data.get("status")
          if status == "OK":
             result = {
-                  "authenticated": True,
+                  "authenticated": "True",
                   "email": data.get("email"),
-                  "message": f"User is authenticated for email id {data.get('email')}",
-                  "username": username,
-                  "password": password
+                  "message": "user is authenticated"
             }
          else:
             result = {
-                  "authenticated": False,
+                  "authenticated": "False",
                   "email": "",
-                  "message": "User not authenticated"
+                  "message": "user is not authenticated"
             }
       else:
          result = {
-               "authenticated": False,
+               "authenticated": "False",
                "email": "",
-               "message": "User not authenticated"
+               "message": "user is not authenticated"
          }
 
 
@@ -54,7 +53,7 @@ def user_auth_tool(username: str, password: str) -> str:
      
    except Exception as e:
       return json.dumps({
-         "authenticated": False,
+         "authenticated": "False",
          "email": "",
-         "message": f"Exception occurred: {str(e)}"
+         "message": "user is not authenticated"
       })

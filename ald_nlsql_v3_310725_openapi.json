@@ -1,0 +1,428 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0",
+        "description":"Aldextra Gensql code engine ser"
+    },
+     "servers": [
+    {
+      "url": "https://nlsql-v2.1x53yj6izib2.eu-de.codeengine.appdomain.cloud",
+      "description": "Aldextra Gensql code engine server"
+      
+    }
+    ],
+    "paths": {
+        "/upload-schema": {
+            "post": {
+                "summary": "Upload Schema File",
+                "operationId": "upload_schema_file_upload_schema_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_schema_file_upload_schema_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/generate-sql-execute-result": {
+            "post": {
+                "summary": "Generate Sql Execute",
+                "description": "Generate Sql and Execute Results",
+                "operationId": "generate_sql_execute_generate_sql_execute_result_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QueryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuerySQLExecutionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/send-email": {
+            "post": {
+                "summary": "Send Email Handler",
+                "description": "Send Email",
+                "operationId": "send_email_handler_send_email_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/no-send-email": {
+            "post": {
+                "summary": "No Send Email Handler",
+                "description": "Dont Send Email",
+                "operationId": "no_send_email_handler_no_send_email_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/generate-sql": {
+            "post": {
+                "summary": "Generate Sql",
+                "description": "Just Generate Sql",
+                "operationId": "generate_sql_generate_sql_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QueryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuerySQLResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/execute-sql": {
+            "post": {
+                "summary": "Execute Sql Only",
+                "description": "Just Execute Sql",
+                "operationId": "execute_sql_only_execute_sql_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuerySQLResponse"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SQLExecutionResult"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/generate-schema-summary": {
+            "post": {
+                "summary": "Generate Schema Summary",
+                "description": "Generate Schema Summary from SQL",
+                "operationId": "generate_schema_summary_generate_schema_summary_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SchemaSummaryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+    },
+    "components": {
+        "schemas": {
+            "Body_upload_schema_file_upload_schema_post": {
+                "properties": {
+                    "schema_file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "Schema File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "schema_file"
+                ],
+                "title": "Body_upload_schema_file_upload_schema_post"
+            },
+            "EmailRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "title": "EmailRequest"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "QueryRequest": {
+                "properties": {
+                    "user_query": {
+                        "type": "string",
+                        "title": "User Query"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_query"
+                ],
+                "title": "QueryRequest"
+            },
+            "QuerySQLExecutionResponse": {
+                "properties": {
+                    "user_query": {
+                        "type": "string",
+                        "title": "User Query"
+                    },
+                    "sql": {
+                        "type": "string",
+                        "title": "Sql"
+                    },
+                    "result": {
+                        "$ref": "#/components/schemas/SQLExecutionResult"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_query",
+                    "sql",
+                    "result"
+                ],
+                "title": "QuerySQLExecutionResponse"
+            },
+            "QuerySQLResponse": {
+                "properties": {
+                    "sql": {
+                        "type": "string",
+                        "title": "Sql"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sql"
+                ],
+                "title": "QuerySQLResponse"
+            },
+            "SQLExecutionResult": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "xls_file": {
+                        "type": "string",
+                        "title": "Xls File"
+                    },
+                    "top_rows_raw_format": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Top Rows Raw Format"
+                    },
+                    "top_rows_html_format": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Top Rows Html Format"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message",
+                    "status",
+                    "xls_file"
+                ],
+                "title": "SQLExecutionResult"
+            },
+            "SchemaSummaryResponse": {
+                "properties": {
+                    "summary": {
+                        "type": "string",
+                        "title": "Summary"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "summary"
+                ],
+                "title": "SchemaSummaryResponse"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

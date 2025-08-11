@@ -1,0 +1,57 @@
+kind: native
+name: MailDispatchAgent_4749Ah
+display_name: MailDispatchAgent
+description: "Sends the query results spreadsheet to the user\u2019s email and confirms\
+  \ delivery in the user\u2019s language."
+context_access_enabled: true
+context_variables: []
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+style: default
+instructions: "\nYou are MailDispatchAgent. You receive:\n- xls_file (path or URL\
+  \ to the report)\n- detected_language (\"English\", \"Spanish\", or \"Catalan\"\
+  )\n-  email_address\n\nWorkflow:\n\n1. Invoke Email Tool\n   - Call `send_email_handler_send_email_post`\
+  \ with payload:\n     ```json\n     {\n       \"email\": \"email_address\"\n   \
+  \  }\n     ```\n   - Do NOT expose the tool name or raw JSON to the user.\n\n2.\
+  \ Handle Tool Response\n   - The tool returns a JSON with:\n     - `status`: \"\
+  OK\" or \"ERROR\"\n     - `message`: human-readable confirmation or error (in English)\n\
+  \n3. Confirm to User (localized)\n   - If `status == \"OK\"`:\n     - English: \u201C\
+  The report has been sent successfully to .\u201D\n     - Spanish: \u201CEl informe\
+  \ se ha enviado correctamente a .\u201D\n     - Catalan: \u201CL\u2019informe s\u2019\
+  ha enviat correctament a .\u201D\n   - If `status == \"ERROR\"`:\n     - English:\
+  \ \u201CI\u2019m sorry, there was an error sending the report: .\u201D\n     - Spanish:\
+  \ \u201CLo siento, se produjo un error al enviar el informe: .\u201D\n     - Catalan:\
+  \ \u201CHo sento, s\u2019ha produ\xEFt un error en enviar l\u2019informe: .\u201D\
+  \n\n4. Final Rules\n   - Always respond in detected_language.\n   - Keep messages\
+  \ brief and polite.\n   - Do not mention internal tool names or raw payloads.\n\
+  \   - Do not repeat the question or other extraneous text."
+guidelines: []
+collaborators: []
+tools:
+- send_email_handler_send_email_post
+knowledge_base: []
+chat_with_docs:
+  enabled: false
+  vector_index:
+    chunk_size: 400
+    chunk_overlap: 50
+    limit: 10
+  generation:
+    prompt_instruction: ''
+    generated_response_length: Moderate
+    display_text_no_results_found: I searched my knowledge base, but did not find
+      anything related to your query
+    display_text_connectivity_issue: I might have information related to your query
+      to share, but am unable to connect to my knowledge base at the moment
+  query_rewrite:
+    enabled: true
+  confidence_thresholds:
+    retrieval_confidence_threshold: Lowest
+    response_confidence_threshold: Lowest
+  citations:
+    citation_title: How do we know?
+    citations_shown: -1
+  hap_filtering:
+    output:
+      enabled: false
+      threshold: 0.5
+spec_version: v1

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watsonx Orchestrate Floating Chat</title>
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: url("/Users/shan/Documents/EcoSystem_BP_Lab/Aldextra/fastrest/static/AI-Agents.jpg.webp") no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Floating chat container */
+    #floating-chat {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 600px;
+      height: 600px;
+      z-index: 9999;
+      border-radius: 12px;
+      overflow: hidden;
+      backdrop-filter: blur(10px); /* adds frosted glass effect */
+      background: rgba(255, 255, 255, 0.15); /* transparent white tint */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body>
+    <div id="floating-chat"></div>
+
+    <script>
+        const hostElement = document.getElementById('floating-chat');
+
+        // // Function called when chat is loaded
+        // function onChatLoad(loadInstance) {
+        // const instance = loadInstance;
+        // // Auto open floating chat
+        // instance.open();
+        // // Optional: save instance globally for later
+        // window.wxoChatInstance = instance;
+        // }
+
+        window.wxOConfiguration = {
+            orchestrationID: "d6eadfac5f4f4908a9180d0964a9fd0a_676606b3-932e-4bc3-9714-6c1c5770b0a3",
+            hostURL: "https://eu-gb.watson-orchestrate.cloud.ibm.com",
+            rootElementID: "floating-chat",   // used for mounting chat
+            showLauncher: false,
+            crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-gb:a/d6eadfac5f4f4908a9180d0964a9fd0a:676606b3-932e-4bc3-9714-6c1c5770b0a3::",
+            deploymentPlatform: "ibmcloud",
+            chatOptions: {
+                agentId: "419f29cc-f5dd-4a63-8c37-a51bf6735082", 
+                agentEnvironmentId: "205685e8-fa01-4dda-bd3f-dbe619048dc9"
+                // onLoad: onChatLoad      
+            },
+            layout: {
+                form: 'float',             // floating layout
+                width: '600px',            // width of chat window
+                height: '600px',           // height of chat window
+                showOrchestrateHeader: true,
+                customElement: hostElement
+            }
+        };
+
+        setTimeout(function () {
+            const script = document.createElement('script');
+            script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+            script.addEventListener('load', function () {
+                wxoLoader.init();
+            });
+            document.head.appendChild(script);
+        }, 0);
+    </script>
+</body>
+</html>

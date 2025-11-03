@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watsonx Orchestrate Fullscreen Chat</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        /* Container for fullscreen chat */
+        #fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="fullscreen-overlay"></div>
+
+    <script>
+        window.wxOConfiguration = {
+            orchestrationID: "d6eadfac5f4f4908a9180d0964a9fd0a_676606b3-932e-4bc3-9714-6c1c5770b0a3",
+            hostURL: "https://eu-gb.watson-orchestrate.cloud.ibm.com",
+            rootElementID: "fullscreen-overlay",   // container for fullscreen
+            showLauncher: false,
+            crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-gb:a/d6eadfac5f4f4908a9180d0964a9fd0a:676606b3-932e-4bc3-9714-6c1c5770b0a3::",
+            deploymentPlatform: "ibmcloud",
+            chatOptions: {
+                agentId: "419f29cc-f5dd-4a63-8c37-a51bf6735082", 
+                agentEnvironmentId: "205685e8-fa01-4dda-bd3f-dbe619048dc9"
+                // onLoad: onChatLoad      
+            },
+            layout: {
+                form: 'fullscreen-overlay',         // fullscreen layout
+                showOrchestrateHeader: true         // show header bar
+            }
+        };
+
+        setTimeout(function () {
+            const script = document.createElement('script');
+            script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+            script.addEventListener('load', function () {
+                wxoLoader.init();
+            });
+            document.head.appendChild(script);
+        }, 0);
+    </script>
+</body>
+</html>

@@ -7,7 +7,7 @@
     },
      "servers": [
     {
-      "url": "https://nlsql-v2.1x53yj6izib2.eu-de.codeengine.appdomain.cloud",
+      "url": "https://nlsql-v3.1x53yj6izib2.eu-de.codeengine.appdomain.cloud",
       "description": "Aldextra Gensql code engine server"
       
     }
@@ -52,7 +52,6 @@
         "/generate-sql-execute-result": {
             "post": {
                 "summary": "Generate Sql Execute",
-                "description": "Generate Sql and Execute Results",
                 "operationId": "generate_sql_execute_generate_sql_execute_result_post",
                 "requestBody": {
                     "content": {
@@ -91,7 +90,6 @@
         "/send-email": {
             "post": {
                 "summary": "Send Email Handler",
-                "description": "Send Email",
                 "operationId": "send_email_handler_send_email_post",
                 "requestBody": {
                     "content": {
@@ -128,7 +126,6 @@
         "/no-send-email": {
             "post": {
                 "summary": "No Send Email Handler",
-                "description": "Dont Send Email",
                 "operationId": "no_send_email_handler_no_send_email_post",
                 "responses": {
                     "200": {
@@ -145,7 +142,6 @@
         "/generate-sql": {
             "post": {
                 "summary": "Generate Sql",
-                "description": "Just Generate Sql",
                 "operationId": "generate_sql_generate_sql_post",
                 "requestBody": {
                     "content": {
@@ -184,7 +180,6 @@
         "/execute-sql": {
             "post": {
                 "summary": "Execute Sql Only",
-                "description": "Just Execute Sql",
                 "operationId": "execute_sql_only_execute_sql_post",
                 "requestBody": {
                     "content": {
@@ -223,7 +218,6 @@
         "/generate-schema-summary": {
             "post": {
                 "summary": "Generate Schema Summary",
-                "description": "Generate Schema Summary from SQL",
                 "operationId": "generate_schema_summary_generate_schema_summary_post",
                 "responses": {
                     "200": {
@@ -238,8 +232,79 @@
                     }
                 }
             }
+        },
+        "/check_user": {
+            "post": {
+                "summary": "Check User",
+                "operationId": "check_user_check_user_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreds"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Serve Index",
+                "operationId": "serve_index__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ml": {
+            "get": {
+                "summary": "Serve Index V2",
+                "operationId": "serve_index_v2_ml_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-    
     },
     "components": {
         "schemas": {
@@ -389,6 +454,24 @@
                     "summary"
                 ],
                 "title": "SchemaSummaryResponse"
+            },
+            "UserCreds": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "UserCreds"
             },
             "ValidationError": {
                 "properties": {

@@ -65,41 +65,41 @@
 </head>
 <body>
   <div id="root"></div>
-    <script>
-       window.wxOConfiguration = {
-                    orchestrationID: "3628504c922343028a1d735cca2420b9_56af426a-4cc1-4c67-a215-743ef58c5d07",
-                    hostURL: "https://au-syd.watson-orchestrate.cloud.ibm.com",
-                    rootElementID: "root",
-                    showLauncher: true,
-                    crn: "crn:v1:bluemix:public:watsonx-orchestrate:au-syd:a/3628504c922343028a1d735cca2420b9:56af426a-4cc1-4c67-a215-743ef58c5d07::",
-                    deploymentPlatform: "ibmcloud",
-                    chatOptions: {
-            agentId: "6e3dd354-e904-4720-859b-71ecc96a9520",
-            agentEnvironmentId: "b0a3cca8-8dcc-4d5f-b937-270515c8d1d1"
-        },
-      style: {
-          headerColor: '#02b3b5',                      // Teal header (unchanged)
-          userMessageBackgroundColor: '#ffffff',       // White for user messages
-          primaryColor: '#02e8c7',                     // New teal for highlights
-          launcherIconFillColor: '#ffffff',            // White chat icon
-          launcherBackgroundColor: '#02e8c7'           // Updated teal for launcher
-        },
-      layout: {
-        form: 'float',
-        width: '900px',
-        height: '800px',
-        showOrchestrateHeader: false
-      }
-    };
-
-    // Load the chat widget script
-    setTimeout(function () {
-      const script = document.createElement('script');
-      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
-      script.addEventListener('load', () => wxoLoader.init());
-      document.head.appendChild(script);
-    }, 0);
-  </script>
+<script>
+  window.wxOConfiguration = {
+    orchestrationID: "3628504c922343028a1d735cca2420b9_a5503c56-b8a0-441d-97c1-8d9989c4f334",
+    hostURL: "https://au-syd.watson-orchestrate.cloud.ibm.com",
+    rootElementID: "root",
+    deploymentPlatform: "ibmcloud",
+    crn: "crn:v1:bluemix:public:watsonx-orchestrate:au-syd:a/3628504c922343028a1d735cca2420b9:a5503c56-b8a0-441d-97c1-8d9989c4f334::",
+    chatOptions: {
+        agentId: "68494cb6-5c0d-4d4b-88a4-041dfe97c0c8",
+        agentEnvironmentId: "d30e2d0d-ad65-49c3-848e-a0131a8cd813",
+    },
+    style: {
+        headerColor: '#02b3b5',                      // Teal header (unchanged)
+        userMessageBackgroundColor: '#ffffff',       // White for user messages
+        primaryColor: '#02e8c7',                     // New teal for highlights
+        launcherIconFillColor: '#ffffff',            // White chat icon
+        launcherBackgroundColor: '#02e8c7'           // Updated teal for launcher
+    },
+    layout: {
+    form: 'float',
+    width: '900px',
+    height: '800px',
+    showOrchestrateHeader: false
+    }
+      
+  };
+  setTimeout(function () {
+    const script = document.createElement('script');
+    script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+    script.addEventListener('load', function () {
+        wxoLoader.init();
+    });
+    document.head.appendChild(script);
+  }, 0);                     
+</script>
 </div>
 </body>
 </html>
